@@ -1,4 +1,5 @@
-chromaticleaves
-===============
+Chromatic Leaves
+================
 
-personal website and blog
+Personal website and blog built with Hakyll, Foundation, and Sass. Graphics
+by [Joel Steudler](http://joelsteudler.com/).

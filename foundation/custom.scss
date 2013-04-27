@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+@import
+  "foundation/foundation-global";
+
+/* not a fan of hanging bullets in the main content div */
+.content li {
+    list-style-position: inside;
+}
+
+.base_header {
+    margin-top:5%;
+}
+
+.base_header a {
+    color: #222222;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 1.5em;
+/*    font-size: 180%;*/
+}
+
+.center_text {
+    text-align:center;
+    margin-top:1%;
+}

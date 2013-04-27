@@ -5,3 +5,11 @@ cabal-dev
 *.chi
 *.chs.h
 .virthualenv
+.DS_Store
+.sass-cache
+Compiler
+Context
+_cache
+_site
+*~
+site
