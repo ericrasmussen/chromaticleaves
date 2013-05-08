@@ -1,5 +1,6 @@
 ---
 title: Code
+usetag: code
 ---
 
 ![](/images/CL_banner_code.png)
@@ -62,6 +63,3 @@ The hakyll code to generate this blog is completely open source.
 
 * [Functional Programming Principles in Scala](https://www.coursera.org/course/progfun)
 * [Cryptography I](https://www.coursera.org/course/crypto)
-
-
-### Recent posts in code

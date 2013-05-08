@@ -3,6 +3,8 @@
 import Hakyll
 import Hakyll.Web.Tags
 import Control.Applicative
+import Hakyll.Core.Identifier
+import Data.Maybe (fromMaybe)
 import Data.Monoid (mappend, mconcat)
 import Data.Time.Format (formatTime)
 import Data.Time.Clock (getCurrentTime)
@@ -40,16 +42,9 @@ main = do
     let postCtx    = defaultPostCtx tags
 
     -- our only root level static page
-    match "about.markdown" $ do
+    match ("about.markdown" .||. "commands.markdown") $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
-            >>= applyBase
-            >>= relativizeUrls
-
-    -- section pages
-    match "explore/*" $ do
-      route $ setExtension "html"
-      compile $ pandocCompiler
             >>= applyBase
             >>= relativizeUrls
 
@@ -79,7 +74,6 @@ main = do
     -- post listings by tag
     tagsRules tags $ \tag pattern -> do
         let title = "Tagged: " ++ tag
-
         route idRoute
         compile $ do
             posts <- constField "posts" <$> postList pattern postCtx recentFirst
@@ -88,12 +82,26 @@ main = do
                 >>= applyBase
                 >>= relativizeUrls
 
-        -- Create RSS feed as well
+        -- rss feeds by tag
         version "rss" $ do
             route $ setExtension "xml"
             compile $ loadAllSnapshots pattern "content"
                 >>= fmap (take 10) . recentFirst
                 >>= renderAtom (feedConfiguration title) feedCtx
+
+    -- section pages
+    match "explore/*" $ do
+      route $ setExtension "html"
+
+      compile $ do
+        -- create a per-item compiler that will grab a list of posts by tag
+          let comp = \item -> exploreCompiler item tags postCtx recentFirst
+          let exploreCtx = mconcat [ field "posts" comp, baseCtx ]
+
+          pandocCompiler
+            >>= loadAndApplyTemplate "templates/explore.html" exploreCtx
+            >>= applyBase
+            >>= relativizeUrls
 
 
     -- our glorious home page
@@ -101,14 +109,14 @@ main = do
         route idRoute
         compile $ do
             let indexCtx = field "posts" $ \_ ->
-                  postList "posts/*" postCtx $ fmap (take 3) . recentFirst
+                  postList "posts/*" postCtx $ fmap (take 10) . recentFirst
 
             getResourceBody
                 >>= applyAsTemplate indexCtx
                 >>= applyBase
                 >>= relativizeUrls
 
-   -- our (maybe not so) friendly 404 page
+    -- our (maybe not so) friendly 404 page
     match "404.html" $ do
         route idRoute
         compile $ pandocCompiler >>= applyBase
@@ -185,3 +193,24 @@ feedCtx = mconcat
     [ bodyField "description"
     , defaultContext
     ]
+
+--------------------------------------------------------------------------------
+-- hacky but necessary until I can refactor to use snapshots
+explorePattern :: Tags -> String -> Pattern
+explorePattern tags usetag = fromList identifiers
+  where identifiers = fromMaybe [] $ lookup usetag (tagsMap tags)
+
+-- need to refactor so this can share code with postList
+exploreCompiler :: Item a
+                -> Tags
+                -> Context String
+                -> ([Item String] -> Compiler [Item String])
+                -> Compiler String
+exploreCompiler item tags postCtx sortFilter = do
+  let identifier = itemIdentifier item
+  usetag <- getMetadataField' identifier "usetag"
+  let pattern = explorePattern tags usetag
+  posts   <- sortFilter =<< loadAll pattern
+  itemTpl <- loadBody "templates/post-item.html"
+  applyTemplateList itemTpl postCtx posts
+

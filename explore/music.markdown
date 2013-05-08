@@ -1,5 +1,6 @@
 ---
 title: Music
+usetag: music
 ---
 
 ![](/images/CL_banner_guitar.png)
@@ -48,5 +49,3 @@ appears on recordings with Nada Brahma and Matthew Grasso.
 * [Trio Seven](http://trioseven.com)
 * [Sacramento Guitar Society](http://www.sacramentoguitarsociety.org)
 * [Sample Oddity](http://www.sampleoddity.com/)
-
-### Recent posts in music

@@ -1,5 +1,6 @@
 ---
 title: Tea
+usetag: tea
 ---
 
 ![](/images/CL_banner_tea.png)
@@ -26,6 +27,3 @@ recommend. I always keep tea from each of them stocked:
 * [Mountain View Tea Village](http://www.mvteavillage.com/)
 * [Samovar](http://www.samovarlife.com/)
 * [Mariage Frères](http://www.mariagefreres.com/)
-
-
-### Recent posts in tea
