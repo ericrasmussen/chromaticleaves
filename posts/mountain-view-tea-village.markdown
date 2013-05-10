@@ -1,5 +1,6 @@
 ---
 title: Mountain View Tea Village
+date: 2010-09-24
 tags: tea, tea shop
 ---
 

@@ -59,7 +59,7 @@ The hakyll code to generate this blog is completely open source.
 * [Programming Python](http://shop.oreilly.com/product/9780596158118.do)
 * [Beginning Databases with PostgreSQL](http://www.apress.com/databases/postgresql/9781590594780)
 
-#### Online classes
+#### Online classes I liked
 
 * [Functional Programming Principles in Scala](https://www.coursera.org/course/progfun)
 * [Cryptography I](https://www.coursera.org/course/crypto)

@@ -1,5 +1,6 @@
 ---
 title: Rachmaninov's 2nd
+date: 2010-02-07
 tags: music, romantic era, symphony
 ---
 

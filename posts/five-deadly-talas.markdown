@@ -1,5 +1,6 @@
 ---
 title: Five Deadly Talas
+date: 2010-08-22
 tags: music, indian classical
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Shostakovich's 5th
+date: 2009-12-01
 tags: music, modern era, symphony
 ---
 

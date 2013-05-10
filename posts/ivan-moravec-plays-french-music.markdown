@@ -1,5 +1,6 @@
 ---
 title: Ivan Moravec Plays French Music
+date: 2013-04-11
 tags: music, piano, romantic era
 ---
 

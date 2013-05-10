@@ -1,5 +1,6 @@
 ---
 title: Paris Tea
+date: 2009-11-24
 tags: tea
 ---
 

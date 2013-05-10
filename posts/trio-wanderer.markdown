@@ -1,5 +1,6 @@
 ---
 title: Saint-Saëns Piano Trios
+date: 2009-11-24
 tags: music, romantic era, trios
 ---
 

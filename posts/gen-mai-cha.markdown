@@ -1,5 +1,6 @@
 ---
 title: Gen Mai Cha
+date: 2010-08-21
 tags: tea, green tea
 ---
 

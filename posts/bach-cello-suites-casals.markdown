@@ -1,5 +1,6 @@
 ---
 title: Bach Cello Suites (Casals)
+date: 2010-08-17
 tags: music, baroque, cello
 ---
 

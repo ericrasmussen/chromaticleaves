@@ -1,6 +1,7 @@
 ---
 title: Blogging with Hakyll
-tags: haskell, hakyll
+date: 2013-04-11
+tags: code, haskell, hakyll
 ---
 
 The biggest barrier to actually maintaining a blog isn't having ideas, or even
@@ -13,18 +14,18 @@ or at the command line.
 For comparison, here's my workflow for open source software
 contributions:
 
-<pre>
+```
 1. Write something in a text editor
 2. Run some commands in a terminal
-</pre>
+```
 
 With hakyll, now I get:
 
-<pre>
+```
 1. Write something in a text editor
 2. Run some commands in a terminal
 3. Preview the changes and publish them
-</pre>
+```
 
 There are no shortage of static blog generators now that they're in style,
 but hakyll stood out for me because of the clean DSL-like feel, I'm at home

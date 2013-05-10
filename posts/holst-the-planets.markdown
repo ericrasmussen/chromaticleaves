@@ -1,5 +1,6 @@
 ---
 title: Holst - The Planets
+date: 2010-08-30
 tags: music, romantic era, symphony
 ---
 

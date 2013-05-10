@@ -1,5 +1,6 @@
 ---
 title: Nigel North - Baroque Lute
+date: 2010-09-29
 tags: music, baroque, lute
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Earl Grey
+date: 2010-08-17
 tags: tea, tea blends
 ---
 

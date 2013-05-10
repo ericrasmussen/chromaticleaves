@@ -1,5 +1,6 @@
 ---
 title: Bartók String Quartets
+date: 2010-08-22
 tags: music, modern era, quartet
 ---
 
