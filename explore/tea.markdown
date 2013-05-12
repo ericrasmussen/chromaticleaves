@@ -1,6 +1,7 @@
 ---
 title: Tea
 usetag: tea
+metadescription: Eric Rasmussen's exploration of tea and tea culture, with links to quality tea and related blog posts.
 ---
 
 ![](/images/CL_banner_tea.png)

@@ -2,6 +2,7 @@
 title: Nigel North - Baroque Lute
 date: 2010-09-29
 tags: music, baroque, lute
+metadescription: Eric Rasmussen reviews Nigel North's spectacular Baroque Lute recording.
 ---
 
 ![](/images/nigel.jpg "Nigel North - Baroque Lute")

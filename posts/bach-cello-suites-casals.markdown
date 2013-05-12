@@ -2,6 +2,7 @@
 title: Bach Cello Suites (Casals)
 date: 2010-08-17
 tags: music, baroque, cello
+metadescription: Blog post and review of Bach's Cello Suites performed by Pablo Casals
 ---
 
 J.S. Bach Suites for Cello

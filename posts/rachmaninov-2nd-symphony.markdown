@@ -2,6 +2,7 @@
 title: Rachmaninov's 2nd
 date: 2010-02-07
 tags: music, romantic era, symphony
+metadescription: Eric Rasmussen explains why your life is incomplete if you don't listen to Rachmaninov's 2nd Symphony.
 ---
 
 Orchestra: Sinfonia Varsovia, conducted by Jose Cura

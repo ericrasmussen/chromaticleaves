@@ -2,6 +2,7 @@
 title: Haircuts
 date: 2013-04-17
 tags: humor, fiction
+metadescription: Haircuts are important. At least, Eric Rasmussen seems to think so.
 ---
 
 I've never been good about getting haircuts. It's too easy to put them off. At

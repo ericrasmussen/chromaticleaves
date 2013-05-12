@@ -2,6 +2,7 @@
 title: Ti Kuan Yin
 date: 2010-08-22
 tags: tea, oolong
+metadescription: Brief overview of one of the most popular oolong teas in America by Eric Rasmussen of Chromatic Leaves.
 ---
 
 Ti Kuan Yin, or Iron Goddess, is undoubtedly one of the most popular oolong teas

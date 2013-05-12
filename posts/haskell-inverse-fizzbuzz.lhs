@@ -2,6 +2,7 @@
 title: InverseFizzbuzz :: PenAndPaper -> Haskell
 date: 2013-05-01
 tags: code, haskell
+metadescription: Explores a way to solve inverse fizzbuzz on paper and then using algebraic data types with Haskell.
 ---
 
 Inverse fizzbuzz is a problem that plays on a well known programming exercise

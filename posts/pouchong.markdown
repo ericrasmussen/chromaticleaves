@@ -2,6 +2,7 @@
 title: Pouchong
 date: 2009-12-20
 tags: tea, oolong
+metadescription: Learn about a tea that is part oolong, part not in this overview by Eric Rasmussen of Chromatic Leaves.
 ---
 
 There have been several defining moments in my evolution as a tea drinker. They

@@ -2,6 +2,7 @@
 title: Earl Grey
 date: 2010-08-17
 tags: tea, tea blends
+metadescription: Learn where to begin with Earl Grey by exploring some of Eric Rasmussen's favorite blends.
 ---
 
 It's time to tackle one of the big ones: Earl Grey. As far as popular flavored

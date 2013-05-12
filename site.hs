@@ -63,12 +63,15 @@ main = do
         compile $ do
             let postListCtx = mconcat
                   [ field "posts" (\_ -> postList "posts/*" postCtx recentFirst)
-                  , constField "title" "Posts"
+                  , baseCtx ]
+
+            let basePostMetaCtx = mconcat
+                  [ constField "metadescription" "Chromatic Leaves post archive"
                   , baseCtx ]
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/posts.html" postListCtx
-                >>= applyBase
+                >>= loadAndApplyTemplate "templates/base.html"  basePostMetaCtx
                 >>= relativizeUrls
 
     -- post listings by tag
@@ -77,9 +80,16 @@ main = do
         route idRoute
         compile $ do
             posts <- constField "posts" <$> postList pattern postCtx recentFirst
+
+            let tagsMeta = "Chromatic Leaves blog posts tagged as " ++ tag
+
+            let baseTagsMetaCtx = mconcat
+                  [ constField "metadescription" tagsMeta
+                  , baseCtx ]
+
             makeItem ""
                 >>= loadAndApplyTemplate "templates/posts.html" posts
-                >>= applyBase
+                >>= loadAndApplyTemplate "templates/base.html"  baseTagsMetaCtx
                 >>= relativizeUrls
 
         -- rss feeds by tag
@@ -94,7 +104,7 @@ main = do
       route $ setExtension "html"
 
       compile $ do
-        -- create a per-item compiler that will grab a list of posts by tag
+          -- create a per-item compiler that will grab a list of posts by tag
           let comp = \item -> exploreCompiler item tags postCtx recentFirst
           let exploreCtx = mconcat [ field "posts" comp, baseCtx ]
 

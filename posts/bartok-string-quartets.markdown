@@ -2,6 +2,7 @@
 title: Bartók String Quartets
 date: 2010-08-22
 tags: music, modern era, quartet
+metadescription: Explore the eerie world of Bartok's String Quartets as interpreted by the Hungarian String Quartet.
 ---
 
 Bartók: 6 String Quartets

@@ -2,6 +2,7 @@
 title: Shostakovich's 5th
 date: 2009-12-01
 tags: music, modern era, symphony
+metadescription: Learn about an amazing recording of Shostakovich's 5th Symphony.
 ---
 
 Orchestra: Berliner Sinfonie-Orchester, conducted by Kurt Sanderling

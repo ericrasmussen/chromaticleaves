@@ -1,7 +1,8 @@
 ---
 title: Software as a Process
 date: 2013-04-12
-tags: code, rants
+tags: code, optimism
+metadescription: The benefits of adding context to code documentation by viewing software as a process.
 ---
 
 There is a fundamental distinction between viewing tasks in

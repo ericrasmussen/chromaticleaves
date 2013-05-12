@@ -2,6 +2,7 @@
 title: Paris Tea
 date: 2009-11-24
 tags: tea
+metadescription: Learn more about Harney & Son's Paris Tea blend in this overview by Eric Rasmussen.
 ---
 
 In my posts about tea I will primarily focus on varieties of loose leaf tea,

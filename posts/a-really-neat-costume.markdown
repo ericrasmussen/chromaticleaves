@@ -2,6 +2,7 @@
 title: A Really Neat Costume
 date: 2004-07-30
 tags: humor, fiction
+metadescription: Learn why having a neat costume is important from Eric Rasmussen of Chromatic Leaves
 ---
 
 It has been my understanding that, sooner or later, people die. Bad things

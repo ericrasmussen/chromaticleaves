@@ -2,6 +2,7 @@
 title: Blogging with Hakyll
 date: 2013-04-11
 tags: code, haskell, hakyll
+metadescription: An overview of why Hakyll is an awesome way to blog for haskellers and hackers.
 ---
 
 The biggest barrier to actually maintaining a blog isn't having ideas, or even

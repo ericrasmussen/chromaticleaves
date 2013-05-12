@@ -2,6 +2,7 @@
 title: Saint-Saëns Piano Trios
 date: 2009-11-24
 tags: music, romantic era, trios
+metadescription: Review of Trio Wanderer's recording of Saint-Saens trios by Eric Rasmussen of Chromatic Leaves.
 ---
 
 Ensemble: Trio Wanderer

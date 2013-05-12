@@ -1,6 +1,7 @@
 ---
 title: Music
 usetag: music
+metadescription: Eric Rasmussen's classical guitar concert bio, 7-string guitar transcriptions, and blog posts about music.
 ---
 
 ![](/images/CL_banner_guitar.png)

@@ -1,6 +1,7 @@
 ---
 title: Code
 usetag: code
+metadescription: Links to Eric Rasmussen's software and recommended learning resources for coders
 ---
 
 ![](/images/CL_banner_code.png)

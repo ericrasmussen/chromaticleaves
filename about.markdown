@@ -1,5 +1,6 @@
 ---
 title: About
+metadescription: Learn more about Eric Rasmussen and Chromatic Leaves
 ---
 
 ### Me

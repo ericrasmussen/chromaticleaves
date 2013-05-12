@@ -2,6 +2,7 @@
 title: A Minor Task
 date: 2007-01-28
 tags: fiction
+metadescription: A very strange story by Chromatic Leaves blogger Eric Rasmussen
 ---
 
 I
