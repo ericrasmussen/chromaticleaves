@@ -1,7 +1,7 @@
 ---
 title: Ivan Moravec Plays French Music
 date: 2013-04-11
-tags: music, piano, romantic era
+tags: music, piano, romantic-era
 metadescription: Ivan Moravec Plays French Music is undervalued and deserves your attention. Eric Rasmussen reviews the recording to explain why.
 ---
 

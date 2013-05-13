@@ -1,7 +1,7 @@
 ---
 title: Holst - The Planets
 date: 2010-08-30
-tags: music, romantic era, symphony
+tags: music, romantic-era, symphony
 metadescription: Enhance your life by discovering why Holst's The Planets is an amazing piece of music.
 ---
 

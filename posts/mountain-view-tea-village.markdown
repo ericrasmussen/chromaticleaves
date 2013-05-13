@@ -1,7 +1,7 @@
 ---
 title: Mountain View Tea Village
 date: 2010-09-24
-tags: tea, tea shop
+tags: tea, tea-shop
 metadescription: Learn why serious tea connoisseurs in Mountain View need to visit the Tea Village.
 ---
 

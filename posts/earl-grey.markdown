@@ -1,7 +1,7 @@
 ---
 title: Earl Grey
 date: 2010-08-17
-tags: tea, tea blends
+tags: tea, tea-blends
 metadescription: Learn where to begin with Earl Grey by exploring some of Eric Rasmussen's favorite blends.
 ---
 

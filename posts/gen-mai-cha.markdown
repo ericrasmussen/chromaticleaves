@@ -1,7 +1,7 @@
 ---
 title: Gen Mai Cha
 date: 2010-08-21
-tags: tea, green tea
+tags: tea, green-tea
 metadescription: Read about a popular blend of green tea with toasted rice kernels.
 ---
 

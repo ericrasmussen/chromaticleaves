@@ -1,7 +1,7 @@
 ---
 title: Five Deadly Talas
 date: 2010-08-22
-tags: music, indian classical
+tags: music, indian-classical
 metadescription: Review of The Five Deadly Talas by Indian classical fusion group Nada Brahma Music Ensemble (guitar and tabla).
 ---
 
