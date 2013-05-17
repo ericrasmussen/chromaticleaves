@@ -35,6 +35,7 @@ enough that I do not want to forget them.
 |--------------------------|----------------------------------------------|
 | Find files               | find <path> -name <glob>                     |
 | rsync (recurse/compress) | rsync -zrv local/path user@host:/remote/path |
+| ctrl-r                   | reverse search through bash history          |
 
 
 ### Syntax
@@ -47,3 +48,4 @@ enough that I do not want to forget them.
 | Action                   | Usage                                        |
 |--------------------------|----------------------------------------------|
 | Pattern match record     | f Rec {field="literal"} = undefined          |
+
