@@ -22,7 +22,12 @@ main = do
     match "templates/*" $ compile templateCompiler
 
     -- copy static assets
-    match ("images/*" .||. "js/**" .||. "scores/*" .||. "css/fonts/*") $ do
+    match (    "images/*"
+          .||. "js/**"
+          .||. "scores/*"
+          .||. "css/fonts/*"
+          .||. "slides/**"
+          ) $ do
         route   idRoute
         compile copyFileCompiler
 
