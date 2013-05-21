@@ -37,6 +37,39 @@ The hakyll code to generate this blog is completely open source.
 * [Github](https://github.com/ericrasmussen/chromaticleaves)
 
 
+### Presentations
+
+--------------------
+
+#### Pyramid
+
+I am a big advocate of the [Pyramid Web
+Framework](http://www.pylonsproject.org/), and in November 2011 I gave an
+introduction to Pyramid presentation for the Linux User's Group of Linux. The
+slides are sparse and very open, and we ended up having the most fun hacking on
+a site interactively at the end of the talk.
+
+Feel free to use these as the basis for other presentations, but they will
+need some touching up:
+
+
+* [Pyramid Overview (Prezi)](http://prezi.com/ixdavfvl3oop/pyramid-overview/)
+* [Pyramid Overview (PDF)](/slides/pyramid_overview.pdf)
+
+
+
+#### Hakyll
+
+In May 2013 I gave a presentation on static site generators for the Linux User's
+Group of Davis, with a focus on my favorite static site generator, Hakyll.
+
+Note that if you want to browse the html slides, you have to watch the
+navigation arrows for a down arrow so you don't miss the nested slides. You're
+welcome to use these as a basis for your own Hakyll presentations.
+
+
+* [Smart Static Sites (html/js)](/slides/smartstaticsites/)
+* [Smart Static Sites (PDF)](/slides/smart_static_sites.pdf)
 
 ### Recommended Learning
 
