@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Smart Static Sites with Hakyll</title>
+
+        <meta name="description" content="an over view of static sites, focusing on Hakyll">
+        <meta name="author" content="Eric Rasmussen">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <div class="slides">
+
+              <section>
+                <h1>Smart Static Sites</h1>
+                <h3>with Hakyll</h3>
+                <p>
+                  <small>-Eric Rasmussen</small>
+                </p>
+              </section>
+
+              <section>
+                <section>
+                    <h2>Back to the 90's</h2>
+                </section>
+                <section>
+                  <div style="background-image:url(images/microfab.gif);">
+                    <h3 style="color:red">Eric's home page!!!</h3>
+                    <p><img style="border:none;" src="images/mchammer.gif" /></p>
+                    <p><img style="border:none;" src="images/notepad.gif" /></p>
+                  </div>
+                </section>
+                <section>
+                  <p>Maybe not those 90's</p>
+                </section>
+                <section>
+                  <p>But static sites <strong>are</strong> coming back in style</p>
+                </section>
+              </section>
+
+              <section>
+                <h2>What are static site generators?</h2>
+                <ul>
+                  <li class="fragment">think of them as build tools</li>
+                  <li class="fragment">turn any input into html</li>
+                  <li class="fragment">rebuild when content changes</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2>But really... why?</h2>
+                <ul>
+                  <li class="fragment">minimalism</li>
+                  <li class="fragment">reduce security concerns</li>
+                  <li class="fragment">version control</li>
+                  <li class="fragment">it's fun</li>
+                </ul>
+              </section>
+              <section>
+                <h2>Text format of your choice</h2>
+                <ul>
+                  <li>markdown</li>
+                  <li>ReSTructured text</li>
+                  <li>LaTeX</li>
+                  <li>MediaWiki</li>
+                </ul>
+              </section>
+              <section>
+                <h2>Syntax highlighting</h2>
+                <pre><code data-trim contenteditable>
+match ("about.markdown" .||. "commands.markdown") $ do
+    route   $ setExtension "html"
+    compile $ pandocCompiler
+        >>= applyBase
+        >>= relativizeUrls
+                </code></pre>
+              </section>
+
+              <section>
+                <p style="font-style:italic;">
+                  "What's hard to ignore about all these platforms is that, your dad will never blog like this."
+                </p>
+                <p>-Mike Bayer (author of SQLAlchemy)</p>
+              </section>
+              <section>
+                <h2>Why not?</h2>
+                <ul>
+                  <li class="fragment">takes time to configure</li>
+                  <li class="fragment">the wild wild west</li>
+                  <li class="fragment">geek factor</li>
+                </ul>
+              </section>
+
+              <section>
+                <section>
+                  <h1>Hakyll</h1>
+                </section>
+                <section>
+                  <h2>Rules-Based EDSL</h2>
+                  <p>configuration via code</p>
+                  <pre><code data-trim contenteditable>
+match ("images/*" .||. "js/**") $ do
+  route   idRoute
+  compile copyFileCompiler
+
+match ("css/*" .||. "css/icons/*" .||. "foundation/*") $ do
+    route $ setExtension "css"
+    compile sassCompiler
+                  </code></pre>
+                </section>
+                <section>
+                  <h2>Features</h2>
+                  <ul>
+                    <li class="fragment">dependency resolution</li>
+                    <li class="fragment">simple file metadata</li>
+                    <li class="fragment">snapshots (during build)</li>
+                  </ul>
+                </section>
+                <section>
+                  <h2>Hakyll built-ins</h2>
+                  <ul>
+                    <li class="fragment">tags and tag cloud rendering</li>
+                    <li class="fragment">rss/atom feed generation</li>
+                    <li class="fragment">code syntax highlighting</li>
+                    <li class="fragment">templating</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>Example: render posts</h2>
+                  <pre><code data-trim contenteditable>
+match "posts/*" $ do
+    route   $ setExtension "html"
+    compile $ pandocCompiler
+        >>= saveSnapshot "content"
+        >>= loadAndApplyTemplate "templates/post.html" postCtx
+        >>= loadAndApplyTemplate "templates/base.html" baseCtx
+        >>= relativizeUrls
+                  </code></pre>
+                </section>
+
+                <section>
+                  <h2>Example: create an atom feed</h2>
+                  <pre><code data-trim contenteditable>
+create ["atom.xml"] $ do
+    route idRoute
+    compile $ do
+        loadAllSnapshots "posts/*" "content"
+            >>= fmap (take 10) . recentFirst
+            >>= renderAtom (feedConfiguration "All posts") feedCtx
+                  </code></pre>
+                </section>
+
+                <section>
+                  <h2>Example: create a context</h2>
+                  <pre><code data-trim contenteditable>
+defaultPostCtx :: Tags -> Context String
+defaultPostCtx tags = mconcat
+  [ dateField "date" "%B %e, %Y"
+  , tagsField "tags" tags
+  , defaultContext
+  ]
+                  </code></pre>
+                </section>
+
+                <section>
+                  <h2>Example: sass/scss compiler</h2>
+                  <pre><code data-trim contenteditable>
+sassCompiler :: Compiler (Item String)
+sassCompiler =
+  getResourceString
+    >>= withItemBody (unixFilter "sass" ["-s", "--scss"])
+    >>= return . fmap compressCss
+                  </code></pre>
+                </section>
+
+                <section>
+                  <h2>Pandoc</h2>
+                  <ul>
+                    <li class="fragment">Swiss-army knife of markup</li>
+                    <li class="fragment">Can parse several markdown/markup formats</li>
+                    <li class="fragment">Can output to html, tex, pdf, and other formats</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>Go dynamic with javascript</h2>
+                  <ul>
+                    <li class="fragment">visual effects</li>
+                    <li class="fragment">indexed search (sphinx)</li>
+                    <li class="fragment">comments (Disqus, Branch)</li>
+                    <li class="fragment">live feeds (twitter, app.net)</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>The Haskell Connection</h2>
+                  <ul>
+                    <li class="fragment">You don't need to know Haskell for Hakyll</li>
+                    <li class="fragment">But know that Haskell is awesome</li>
+                    <li class="fragment">Modern type systems are expressive and productive</li>
+                    <li class="fragment">Beginner friendly community</li>
+                  </ul>
+                </section>
+
+              </section>
+
+              <section>
+                <section>
+                  <h1>Drawbacks</h1>
+                </section>
+                <section>
+                  <h2>Haskell is... too awesome?</h2>
+                    <p style="font-style:italic;">
+                      "a monad is a monoid in the category of endofunctors, what's the problem?"
+                    </p>
+                </section>
+                <section>
+                  <h2>For complex sites</h2>
+                  <ul>
+                    <li class="fragment">Haskell knowledge likely required</li>
+                    <li class="fragment">DSLs can be hard to hack on</li>
+                    <li class="fragment">but there are open source examples</li>
+                  </ul>
+                </section>
+              </section>
+
+              <section>
+                <h2>Where to begin</h2>
+                <p>The Hakyll tutorials are a great starting point</p>
+                <p>But if you already have a favorite language, try:</p>
+                <ul>
+                  <li class="fragment">pelican (python)</li>
+                  <li class="fragment">jekyll (ruby)</li>
+                  <li class="fragment">nanoc (ruby)</li>
+                  <li class="fragment">middleman (ruby)</li>
+                  <li class="fragment">high_voltage (ruby)</li>
+                </ul>
+                <p class="fragment"><small>(ruby devs like DSLs)</small></p>
+                <p class="fragment"><small>(but you can find examples in most languages)</small></p>
+              </section>
+
+              <section>
+                <h2>A word of caution</h2>
+                <p>The good news: typically no proprietary format or DB, but...</p>
+                <ul>
+                  <li class="fragment">Static site generators come and go</li>
+                  <li class="fragment">Prepare for breaking changes/tinkering</li>
+                  <li class="fragment">No security patches! (good thing)</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2>Deployment</h2>
+                <ul>
+                  <li class="fragment">it's plain html and assets</li>
+                  <li class="fragment">so you can deploy just about anywhere</li>
+                  <li class="fragment">rsync -zrv mysite/ user@host:~/mysite/</li>
+                  <li class="fragment">GitHub Pages (http://pages.github.com/)</li>
+                </ul>
+              </section>
+
+              <section>
+                <section>
+                  <h2>CSS for non-designers</h2>
+                  <ul>
+                    <li class="fragment">Don't do it</li>
+                    <li class="fragment">Just... don't</li>
+                </section>
+                <section>
+                  <img src="images/css.gif"/>
+                </section>
+                <section>
+                  <h2>The easy way</h2>
+                  <ul>
+                    <li class="fragment">Use twitter bootstrap</li>
+                    <li class="fragment">Or zurb foundation</li>
+                    <li class="fragment">Learn grid systems and responsive classes</li>
+                  </ul>
+                </section>
+                <section>
+                  <h2>desktop</h2>
+                  <p><img src="images/cleaves_big.png"/></p>
+                  <p>Use grid layouts to design big</p>
+                </section>
+                <section>
+                  <h2>mobile</h2>
+                  <p>
+                    <img src="images/cleaves_small1.png"/>
+                    <img src="images/cleaves_small2.png"/>
+                  </p>
+                  <p>Design small at the same time</p>
+                </section>
+              </section>
+
+              <section>
+                <h2>SASS</h2>
+                <ul>
+                  <li class="fragment">variables -- $blue: #3bbfce;</li>
+                  <li class="fragment">functions -- darken($blue, 9%);</li>
+                  <li class="fragment">like coding, but not</li>
+                  <li class="fragment">reduces CSS <strike>madness</strike> boilerplate</li>
+                  <li class="fragment">compile with your build process</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2>Choose your own adventure</h2>
+                <h3><small>Q&amp;A</small></h3>
+                <ul>
+                  <li>haskell</li>
+                  <li>hakyll</li>
+                  <li>javascript + services</li>
+                  <li>responsive design</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2>Links</h2>
+                <ul>
+                  <li><a href="http://chromaticleaves.com">Chromatic Leaves</a></li>
+                  <li><a href="http://jaspervdj.be/hakyll/">Haykll</a></li>
+                  <li>
+                    <a href="http://foundation.zurb.com/">Foundation</a> /
+                    <a href="http://sass-lang.com/">SASS</a>
+                  </li>
+                  <li><a href="http://divshot.github.io/geo-bootstrap/">Geo for Bootstrap</a></li>
+                  <li><a href="http://lab.hakim.se/reveal-js/">reveal.js</a></li>
+                </ul>
+              </section>
+
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                    // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+                    // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
