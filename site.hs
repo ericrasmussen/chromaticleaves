@@ -22,12 +22,9 @@ main = do
     match "templates/*" $ compile templateCompiler
 
     -- copy static assets
-    match (    "images/*"
-          .||. "js/**"
-          .||. "scores/*"
-          .||. "css/fonts/*"
-          .||. "slides/**"
-          ) $ do
+    let assets = ["images/*", "js/**", "scores/*", "css/fonts/*", "slides/**"]
+
+    match (foldr1 (.||.) assets) $ do
         route   idRoute
         compile copyFileCompiler
 
