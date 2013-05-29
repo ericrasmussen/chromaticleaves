@@ -5,7 +5,7 @@ metadescription: Learn more about Eric Rasmussen and Chromatic Leaves
 
 ### Me
 
-Family man, classical guitarist, tea afficionado, hacker
+Family man, classical guitarist, tea aficionado, hacker
 
 
 ### Contact

@@ -6,7 +6,7 @@ metadescription: Learn about deform retail form rendering in python web applicat
 ---
 
 If you write web applications, chances are you've come across the dubious
-entities known as "forms". The delicate interplay between html, css, javascript,
+entities known as forms. The delicate interplay between html, css, javascript,
 server side code, databases, and expectations from your users cannot be
 understated.  So let me say it plainly: forms are hard.
 
