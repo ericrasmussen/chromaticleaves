@@ -43,10 +43,9 @@ Perhaps in part thanks to this guy:
 ![](/images/dr_evil.jpg "Dr. \"Evil\"")
 <br/>
 
-I am fairly certain the large marketing firms have caught on by now, but
-our culture associates unnecessary double quotes with irony. For once, I'm not
-the first person to question the local real estate "expert" or the "fresh"
-chicken on sale.
+I am fairly certain the large marketing firms have caught on by now: our culture
+associates unnecessary double quotes with irony. For once, I'm not the first
+person to question the local real estate "expert" or the "market fresh" chicken.
 
 Nevertheless, I fear the efforts to abuse punctuation will continue. Do not let
 this small victory sway you, fellow pedants. Stay vigilant!
