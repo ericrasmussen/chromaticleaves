@@ -17,7 +17,7 @@ engaged in a discussion similar to this one:
 > "Or they take out the symbols I use randomly for emphasis!"
 >
 > "We must gain control of these symbols at once. We need to take the power out
-> of the writ'er's' hand's'. But how?"
+> of the writ'er's' hand's. But how?"
 >
 > "Ladies and gentlemen, our course is clear: if we begin confusing the next
 > generation of customers now, one day no one will even know how to use an
@@ -41,6 +41,7 @@ double quotes.
 Perhaps in part thanks to this guy:
 
 ![](/images/dr_evil.jpg "Dr. \"Evil\"")
+<br/>
 
 I am fairly certain the large marketing firms have caught on by now, but
 our culture associates unnecessary double quotes with irony. For once, I'm not
@@ -51,4 +52,4 @@ Nevertheless, I fear the efforts to abuse punctuation will continue. Do not let
 this small victory sway you, fellow pedants. Stay vigilant!
 
 
-<sub>*From a sign that should have said: "relax, you're at Business Name."</sub>
+<sub>*From a sign that should have read: "relax, you're at Business Name."</sub>
