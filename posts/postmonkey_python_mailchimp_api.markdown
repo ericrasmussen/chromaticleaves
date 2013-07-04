@@ -40,15 +40,13 @@ purpose, but there were a few red flags for my use case/expectations:
 Once you create an instance of PostMonkey with your API key, you can call
 methods on it using the exact method names from MailChimp's official [API
 v1.3](http://apidocs.mailchimp.com/api/1.3/). PostMonkey uses the JSON API, so
-in general the python types will line up with the API types as expected (string
--> string, int -> number, float -> number, dict -> object/associative array,
-list -> array, etc).
+in general the python types will line up with the API types as expected. The
+only caveat is MailChimp treats arrays as either indexed arrays (python lists)
+or associative arrays (python dicts), and you have to check the description
+to infer which they mean. More on that
+[here](https://postmonkey.readthedocs.org/en/latest/mailchimp.html#parameters-and-types).
 
-If there's any interest, at some point I may write up a guide on how to
-translate the MailChimp-isms to python-isms. It'd be a lot less work than
-trying to re-document their entire API. In the meantime, you can infer a whole
-lot from some examples:
-
+Here are some examples:
 
 ```python
 # create a PostMonkey instance with a 10 second timeout for each API call
@@ -94,7 +92,8 @@ Some of the recent updates include:
 
 * general cleanup to improve readability
 * breaking the documentation into separate pages
-* understanding how arrays in MailChimp's API translate to json
+* a short guide on translating MailChimp parameter types to python types
+* details on how to use merge_vars
 
 
 #### Next steps
@@ -103,7 +102,7 @@ MailChimp has a large API, and parts of it are very closely tied with their
 server-side PHP. It's entirely possible that my general approach to an API
 wrapper has missed edge cases that I wasn't able to test on my personal account
 or in the projects I've worked on for clients. If you are having trouble
-deciding on which wrapper to use, give PostMonkey a try, and if there is some
+deciding which wrapper to use, give PostMonkey a try. And if there is some
 dark corner of the MailChimp API that's missing, open an issue and I will
 do everything I can to address it.
 
