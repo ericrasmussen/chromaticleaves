@@ -22,7 +22,7 @@ on their API.
 
 #### Detour: choosing an API wrapper
 
-At the time I wrote PostMonkey, were a handful of python wrappers for
+At the time I wrote PostMonkey, there were a handful of python wrappers for
 MailChimp's API. They were all written for different use cases and serve their
 purpose, but there were a few red flags for my use case/expectations:
 
