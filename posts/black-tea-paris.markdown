@@ -1,7 +1,7 @@
 ---
 title: Paris Tea
 date: 2009-11-24
-tags: tea
+tags: tea, black-tea
 metadescription: Learn more about Harney & Son's Paris Tea blend in this overview by Eric Rasmussen.
 ---
 
