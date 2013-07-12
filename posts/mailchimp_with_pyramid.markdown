@@ -1,6 +1,6 @@
 ---
 title: Integrating MailChimp with Pyramid
-date: 2013-07-05
+date: 2013-07-11
 tags: code, python, pyramid
 metadescription: Learn how to integrate MailChimp into your Pyramid Applications using the python PostMonkey library
 ---
@@ -45,7 +45,7 @@ This section assumes you're familiar with creating console scripts using
 [Command-Line Pyramid](
 http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/commandline.html).
 
-Before creating the script, let's add the API key to your Pyramid configuration
+Before creating the script, let's add your API key to your Pyramid configuration
 file, typically development.ini or production.ini. We'll want to prefix it
 with "postmonkey." so *PostMonkey* will recognize it:
 
@@ -67,7 +67,7 @@ def my_script():
     env = bootstrap('/path/to/my/development.ini')
 
     # access the settings from the registry
-    env['registry'].settings
+    settings = env['registry'].settings
 
     # create a *PostMonkey* instance from your app settings
     postmonkey = postmonkey_from_settings(**settings)
@@ -85,7 +85,7 @@ def my_script():
 
         new_susbcribers.append(attributes)
 
-    # attempt the batch subscribe and handle the error if it fails
+    # attempt the batch subscribe and handle an exception
     try:
         postmonkey.listBatchSubscribe(batch=new_subscribers)
     except MailChimpException, e:
@@ -95,12 +95,15 @@ def my_script():
     env['closer']()
 ```
 
-When you setup your application, the script will be available in your bin/
-directory as a standalone script, making it easy to run with cron or a task
-scheduler of your choice.
+If you've followed along with the introductory Pyramid tutorials or general
+python best practices, you'll install your application in a virtualenv. After
+creating your console script and running ```myvirtualenv/bin/python setup.py
+develop``` on your application's *setup.py*, your new script will be available
+as a standalone script in *myvirtualenv/bin/*. This makes it easy to run with
+cron or your favorite task scheduler.
 
-Note also that you don't need to manage the settings in your config file. You
-could just as easily write:
+Note also that you don't need to manage the settings in your Pyramid config
+file. You could just as easily write:
 
 ```python
 from postmonkey import PostMonkey
@@ -108,15 +111,17 @@ postmonkey = PostMonkey(my_api_key)
 ```
 
 But in most cases it's much more convenient to manage the settings along with
-your other application settings.
+your other application settings. This is especially helpful when you take
+advantage of other available options, including the request timeout setting
+we'll see next.
 
 
 #### PostMonkey in views
 
 Although it's not recommended, there are certain cases where you may want to
 make calls to MailChimp inside a view, even if it means blocking the view
-response. You should be sure to set a ```postmonkey.timeout``` setting (in
-seconds) in your config:
+response. In these cases, you should be sure to set a ```postmonkey.timeout```
+setting (in seconds) in your config:
 
 ```
 postmonkey.apikey = my_api_key
@@ -124,13 +129,13 @@ postmonkey.timeout = 2
 ```
 
 The timeout setting is passed directly to the *Requests* library to stop the
-request if the response takes too long (note though that this setting has
-nothing to do with how long the response takes to download). It's unlikely that
-you'll need this setting, but if you are going to block responses, it's nice
-to have it available and easy to configure.
+request if the server takes too long to respond. Note, however, that this only
+covers the initial response from MailChimp; once they begin sending a response
+it won't time out, even if they're sending a lot of data that takes
+time to download.
 
-We'll prepare by adding an application-wide *PostMonkey* instance to the
-registry so it will be available to views:
+We'll setup this example by first adding an application-wide *PostMonkey*
+instance to the registry so it will be available to views:
 
 ```python
 # in your app startup
@@ -181,5 +186,4 @@ References:
 This article was written for PostMonkey 1.0b and Pyramid 1.4. Please email
 eric at chromatic leaves dot com if you're using newer versions and run into
 any issues.
-
 
