@@ -17,11 +17,11 @@ I was first drawn to Darjeeling for the flavor: the light, golden brew of a new
 first flush, or the darker, chocolate intensity of a balanced second flush. But
 I stayed for the culture:  Darjeeling teas are *interesting*.
 
-They come from the Darjeeling district in India, and the quality of the tea
-is highly dependent on the particular estate producing it, how well the crops
+They come from the Darjeeling district in India, and the quality of the tea is
+highly dependent on the particular estate producing it, how well the crops
 performed in a given year, and when the leaves were harvested. First and second
-flush harvests are the most common labels you'll see for higher quality
-Darjeelings.
+flush<sup>*</sup> harvests are the most common labels you'll see for higher
+quality Darjeelings.
 
 The complexity of the tea and its production has invited comparisons to wine
 (more specifically Champagne, because of the regional nature of both), and it's
@@ -37,3 +37,8 @@ with their Darjeeling sachets (a nice blend of first flush and autumnal).
 I'm currently enjoying a second flush organic Darjeeling from [The Tea List](
 http://tea-list.com/) in Davis, CA. They don't offer online ordering, but if
 you live within driving distance it's worth the trip.
+
+<sub>*First flush is the spring harvest, and second flush the summer harvest.
+Each has distinct characteristics, and both tend to be sold as high quality
+loose leaf tea. There are other harvests (or flushes) as well, but the tea
+they produce is typically used in blends.</sub>
