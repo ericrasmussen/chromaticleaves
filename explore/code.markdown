@@ -93,6 +93,13 @@ welcome to use these as a basis for your own Hakyll presentations.
 * [Programming Python](http://shop.oreilly.com/product/9780596158118.do)
 * [Beginning Databases with PostgreSQL](http://www.apress.com/databases/postgresql/9781590594780)
 
+And a special mention for Jerry P. King's *Mathematics in 10 Lessons: The Grand
+Tour*. It was the first book I read that explained what it meant to do math, and
+it did so in a way that was engaging and accessible. I feel I could replace my
+entire high school and undergraduate college math education with this book and
+still come out ahead in terms of conceptual understanding and the hunger for
+learning more.
+
 #### Online classes I liked
 
 * [Functional Programming Principles in Scala](https://www.coursera.org/course/progfun)
