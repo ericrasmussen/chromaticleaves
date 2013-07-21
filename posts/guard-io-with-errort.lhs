@@ -1,6 +1,6 @@
 ---
 title: Playing Catch: Handling IO Exceptions with ErrorT
-date: 2013-07-18
+date: 2013-07-20
 tags: code, haskell
 metadescription: Examine ways to safely convert Haskell IO exceptions to native ErrorT exceptions
 ---
