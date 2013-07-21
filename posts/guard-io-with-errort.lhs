@@ -128,7 +128,7 @@ We'll also want a convenient way to evaluate computations in the context of our
 monad and produce a result:
 
 > runApp :: MyApp a -> IO (Either String a)
-> runApp k = runErrorT (getApp k)
+> runApp = runErrorT . getApp
 
 Let's go back to the version of our divide function that used a Maybe
 result. We'll redefine it here with a more explicit name:
@@ -157,10 +157,11 @@ Now we can use tryDivision within a runApp block:
 >   liftIO $ putStrLn " > successful division!"
 >   return res
 
-If the division fails, then the result will never be printed or returned. This
-is the same behavior we'd expect from a function that throws an error in an
-imperative language, but in our case we haven't altered the flow of our program,
-and our return type is still referentially transparent.
+If the division fails, then our "successful division!" message will never be
+printed. This is the same behavior we'd expect
+from a function that throws an error in an imperative language, but in our case
+we haven't altered the flow of our program, and our return type is still
+referentially transparent.
 
 Let's put it to the test:
 
@@ -212,8 +213,7 @@ the same folder as the program) will cause the program to terminate with the
 message:
 
 ```console
-*** Exception: welcome_message: openFile: does not exist (No such
-file or directory)
+*** Exception: welcome_message: openFile: does not exist (No such file or directory)
 ```
 
 The competing notions of failure here are problematic; if we needed to perform
@@ -223,10 +223,10 @@ reason about.
 
 <h3>The road to safety</h3>
 
-What are some ways to handle this? The simplest solution I can think of is to
-write a function of FilePath -> MyApp String that will convert an
-IOException to an error in ErrorT, or otherwise return the contents to our
-underlying monad stack. Using tryIOError from System.IO.Error makes this easy:
+What are some ways to handle this? One obvious solution is writing a function of
+FilePath -> MyApp String that will either convert an IOException to an error in
+ErrorT, or return the contents to our underlying monad stack. Using tryIOError
+from System.IO.Error makes this easy:
 
 > guardedRead :: FilePath -> MyApp String
 > guardedRead fp = do
@@ -254,7 +254,7 @@ we could safely run them at that point, without having lost any information
 regarding the IO exception.
 
 We've accomplished what we set out to do for this particular example, but can we
-generalize this to any IO action?
+generalize this to any IO action? Sure!
 
 > guardedAction :: (MonadIO m, MonadError String m) => IO a -> m a
 > guardedAction action = do
@@ -298,6 +298,7 @@ handle IO exceptions as ErrorT errors:
 >     liftIO $ putStrLn contents
 >     divided <- tryDivision 42 8
 >     liftIO $ putStrLn ("I divided 42 and 8 and got: " ++ show divided)
+>
 >   case result of
 >     Left  err -> putStrLn ("Caught error: " ++ err)
 >     Right _   -> putStrLn "No errors!"
@@ -325,5 +326,5 @@ I'd like to see generalGuardIO or a similar function in MonadCatchIO, but it's
 entirely possible this is an uncommon use case, or that the MonadError
 constraint is too specific for an otherwise general library.
 
-Please [discuss](#) and share other strategies that have worked for you.
-
+Until then, this is a nice pattern for guarding against IO exceptions without
+loss of information or loss of referential transparency.
