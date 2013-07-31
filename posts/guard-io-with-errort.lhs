@@ -14,27 +14,34 @@ contents into a .lhs file and load it in GHCi to try out the examples. Speaking
 of which, let's declare the language pragmas and imports we'll need for the
 examples to follow:
 
-> {-# LANGUAGE FlexibleContexts, GeneralizedNewtypeDeriving #-}
+> {-# LANGUAGE FlexibleContexts, GeneralizedNewtypeDeriving, MultiParamTypeClasses, TypeFamilies #-}
 >
-> import Prelude hiding        (catch)
+> import Prelude hiding               (catch)
 >
-> import System.IO.Error       (tryIOError)
+> import Control.Applicative
 >
-> import Control.Exception     (IOException)
+> import System.IO.Error              (tryIOError)
 >
-> import Control.Monad.CatchIO ( catch
->                              , MonadCatchIO
->                              )
+> import Control.Exception            (IOException)
 >
-> import Control.Monad.Error   ( ErrorT
->                              , Monad
->                              , MonadIO
->                              , MonadError
->                              , liftIO
->                              , runErrorT
->                              , throwError
->                              )
+> import Control.Monad                (liftM)
 >
+> import Control.Monad.Base
+>
+> import Control.Monad.Trans.Control
+>
+> import Control.Exception.Lifted     (catch)
+>
+> import Control.Monad.Error          ( ErrorT
+>                                     , Monad
+>                                     , MonadIO
+>                                     , MonadError
+>                                     , liftIO
+>                                     , runErrorT
+>                                     , throwError
+>                                     )
+>
+
 
 <h3>Motivation</h3>
 
@@ -111,7 +118,8 @@ what our app stack looks like:
 
 > newtype MyApp a = MyApp {
 >   getApp :: ErrorT String IO a
->   } deriving (Monad, MonadIO, MonadCatchIO, MonadError String)
+>   } deriving (Functor, Applicative, Monad, MonadIO, MonadError String, MonadBase IO)
+>
 
 
 We've wrapped it in a newtype to encapsulate it, which is a good practice if
@@ -274,15 +282,34 @@ for a similar purpose.
 When I first wrote a version of guardedAction, my "there must be a pattern for
 that" sense kicked in and compelled me to ask on
 [haskell-cafe](http://www.haskell.org/mailman/listinfo/haskell-cafe) if this
-functionality existed or if there were other approaches to the problem. [Alberto
-Corona](http://haskell-web.blogspot.com/) suggested this might be a case for
-MonadCatchIO, and he was right.
+functionality existed or if there were other approaches to the problem. The
+current pattern for handling exceptions in monad stacks is to use the catch
+function from Control.Exception.Lifted.
 
-As long as we derive or create a MonadCatchIO instance for our monad stack,
-we can use MonadCatchIO.catch to easily handle IOExceptions by converting
-them to Strings and applying throwError:
+This will require us to create an instance of MonadBaseControl IO for our app:
 
-> guardIO :: (MonadCatchIO m, MonadError String m) => IO a -> m a
+> instance MonadBaseControl IO MyApp where
+>    newtype StM MyApp a = StApp { unStApp :: StM (ErrorT String IO) a }
+>
+>    liftBaseWith f = MyApp . liftBaseWith $ \r -> f $ liftM StApp . r . getApp
+>
+>    restoreM       = MyApp . restoreM . unStApp
+
+
+The above code may be understandably scary, but much of it exists to handle
+wrapping and unwrapping the newtypes. The gist of it is the MonadBaseControl
+typeclass provides a way to run a computation in the base monad of a monad stack
+but still return the value back to the original stack. There is a history behind
+how this pattern emerged and has been implemented in the past, so I recommend
+reading Michael Snoyman's
+[overview](http://www.yesodweb.com/blog/2011/08/monad-control).
+
+
+The important point for us is we now can use the Control.Exception.Lifted catch
+function to easily handle IOExceptions by converting them to Strings and
+applying throwError:
+
+> guardIO :: (MonadBaseControl IO m, MonadIO m, MonadError String m) => IO a -> m a
 > guardIO action =
 >   liftIO action `catch` \e -> throwError $ show (e :: IOException)
 
@@ -310,7 +337,7 @@ At this point we're in good shape, but I want to add that if you are using an
 instance of MonadError with a Left case other than String, we can even
 generalize this further to:
 
-> generalGuardIO :: (MonadCatchIO m, MonadError e m) => (IOException -> e) -> IO a -> m a
+> generalGuardIO :: (MonadBaseControl IO m, MonadIO m, MonadError e m) => (IOException -> e) -> IO a -> m a
 > generalGuardIO fromExc action =
 >   liftIO action `catch` \e -> throwError $ fromExc e
 
@@ -319,12 +346,28 @@ to whatever error type we use with MonadError, but it covers a much wider
 range of use cases. If we were to use this latter definition, our first attempt
 at guardIO would become:
 
-> guardIO' :: (MonadCatchIO m, MonadError String m) => IO a -> m a
+> guardIO' :: (MonadBaseControl IO m, MonadIO m, MonadError String m) => IO a -> m a
 > guardIO' = generalGuardIO show
 
-I'd like to see generalGuardIO or a similar function in MonadCatchIO, but it's
-entirely possible this is an uncommon use case, or that the MonadError
-constraint is too specific for an otherwise general library.
 
-Until then, this is a nice pattern for guarding against IO exceptions without
-loss of information or loss of referential transparency.
+<h3>Updates</h3>
+
+Based on feedback from the community, I'd like to add a couple of caveats and
+clarifications.
+
+First, this approach works best for command line utilities and small
+standalone programs that need basic IO capabilities without requiring a lot of
+complicated extra handling specific to IO exceptions. The catch function
+in Control.Exception.Lifted is well-suited to this purpose.
+
+On the other hand, this approach won't handle automatic catching of asynchronous
+exceptions. If you're writing async code or using libraries that can throw
+async exceptions, handling them requires different techniques. A good starting
+point for learning more is Michael Snoyman's
+[tutorial](https://www.fpcomplete.com/user/snoyberg/general-haskell/exceptions/catching-all-exceptions)
+on FP Complete.
+
+Additionally, [John W.](http://newartisans.com/) pointed out that some monads
+may not be able to provide an instance of MonadBaseControl IO, such as those in
+the popular conduit library.
+
