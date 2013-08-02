@@ -337,7 +337,8 @@ At this point we're in good shape, but I want to add that if you are using an
 instance of MonadError with a Left case other than String, we can even
 generalize this further to:
 
-> generalGuardIO :: (MonadBaseControl IO m, MonadIO m, MonadError e m) => (IOException -> e) -> IO a -> m a
+> generalGuardIO :: (MonadBaseControl IO m, MonadIO m, MonadError e m)
+>                => (IOException -> e) -> IO a -> m a
 > generalGuardIO fromExc action =
 >   liftIO action `catch` \e -> throwError $ fromExc e
 
@@ -350,7 +351,7 @@ at guardIO would become:
 > guardIO' = generalGuardIO show
 
 
-<h3>Updates</h3>
+<h3>Updates: 2013-08-01</h3>
 
 Based on feedback from the community, I'd like to add a couple of caveats and
 clarifications.
