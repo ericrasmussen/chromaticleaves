@@ -1,7 +1,7 @@
 ---
 title: Making Code Reasonable
 date: 2013-08-28
-tags: code, haskell
+tags: code, haskell, soapbox
 metadescription: A brief intro to forthcoming articles on using types to increase confidence in code
 ---
 
@@ -49,7 +49,7 @@ def bar(baz, quux):
 And that's only scratching the surface. It's entirely possible that baz and quux
 are modifying some shared state, and if we don't call them in order, we'll face
 imminent meltdown. Maybe one of the methods has an obscure condition that tells
-it to return unicode every second Tuesday, but integers the rest of the time.
+it to return a string every second Tuesday, but integers the rest of the time.
 
 Feel free to ponder additional unforeseen problems: bar called with one or more
 None arguments or the wrong number of arguments, methods on baz or quux hitting
@@ -57,11 +57,17 @@ the file system, modifying a database, raising exceptions or abruptly
 terminating your program, etc. Considering all the possibilities and trying to
 account for them is an exercise in madness-inducing futility.
 
+In 2006 Tim Sweeney of Epic Games gave a talk on the future of game
+development<sup>[2](#footnote2)</sup>, in one slide demonstrating all the possible runtime
+failures in a C# snippet:
+
+![](/images/epic-fail.png "Tim Sweeney on Game Dev")
+
 This brings us back to the original point: it's often easier to write code than
 read it, because reading it communicates so very little about what it actually
-does. Many of us have been bitten before by fragile code with subtle
-dependencies, shared global state, and worse. Even many popular open source
-libraries occasionally engage in bouts of inspired insanity.
+does or what may go wrong when it runs. Many of us have been bitten before by
+fragile code with subtle dependencies, shared global state, and worse. Even many
+popular open source libraries occasionally engage in bouts of inspired insanity.
 
 
 #### Mitigating the unknowns
@@ -145,7 +151,7 @@ this function.
 
 The type signature not only conveys information, but also forms a
 proposition: given a Baz and a Quux, we can prove that the function
-*bar* will produce an Int.<sup>[2](#footnote2)</sup>
+*bar* will produce an Int.<sup>[3](#footnote3)</sup>
 
 Digging deeper, we can even infer that doSomething has the type Baz -> Int, and
 doSomethingElse has the type Quux -> Int.
@@ -156,7 +162,7 @@ effectful computations based on the type signature alone. If *bar* had the
 capability to engage in IO, it would be reflected in its return type.
 
 There are some properties that are difficult or impossible to enforce at the
-type level<sup>[3](#footnote3)</sup>, so even in this model there is still room
+type level<sup>[4](#footnote4)</sup>, so even in this model there is still room
 for testing as a way to gain confidence in our code. Typically, however, the
 tests will focus on establishing and attempting to enforce the properties we
 expect the code to have. This lets us throw barrels full of randomly generated
@@ -189,19 +195,25 @@ possible alternative approaches, which is often an impractical level of
 documentation for programs intended to be used by people to do things.
 
 The project will also favor code confidence over code conciseness or code
-celerity<sup>[4](#footnote4)</sup>. All the while still making a working, and, dare I say it,
+celerity<sup>[5](#footnote5)</sup>. All the while still making a working, and, dare I say it,
 reasonable application. Stay tuned!
 
 <hr />
 
 <sub><a id="footnote1">1.</a> From [Things You Should Never Do, Part I](http://www.joelonsoftware.com/articles/fog0000000069.html)</sub>
 
-<sub><a id="footnote2">2.</a> See the [Haskell Wiki page](http://www.haskell.org/haskellwiki/Curry-Howard-Lambek_correspondence)
+<sub><a id="footnote2">2.</a>Links to Tim Sweeney's excellent presentation
+available in [PPT](http://www.cs.princeton.edu/~dpw/popl/06/Tim-POPL.ppt) and
+[PDF](http://groups.csail.mit.edu/cag/crg/papers/sweeney06games.pdf)
+
+<sub><a id="footnote3">3.</a> See the [Haskell Wiki page](http://www.haskell.org/haskellwiki/Curry-Howard-Lambek_correspondence)
 on types as propositions (and more).
 </sub>
 
-<sub><a id="footnote3">3.</a> Excepting the capabilities of dependently typed
+<sub><a id="footnote4">4.</a> Excepting the capabilities of dependently typed
 languages</sub>
 
-<sub><a id="footnote4">4.</a> Believe it or not, that's not the first time I've
+<sub><a id="footnote5">5.</a> Believe it or not, that's not the first time I've
 used celerity in a sentence</sub>
+
+
