@@ -1,6 +1,6 @@
 ---
 title: Making Code Reasonable
-date: 2013-08-26
+date: 2013-08-28
 tags: code, haskell
 metadescription: A brief intro to forthcoming articles on using types to increase confidence in code
 ---
@@ -107,13 +107,14 @@ issues manifest in the form of subtle bugs, libraries that interact in confusing
 and unexpected ways, and a whole lot of headaches in trying to reconcile bad
 behavior.
 
-To make it worse, the argument for imperative languages being "practical" or
-"real world scale" is often used to dismiss the idea that other paradigms can
+To make it worse, the argument that this approach is "practical" or "real world
+scale" is often used to dismiss the idea that other paradigms can
 achieve a greater level of safety in a comparable amount of code.
 
 I'm tempted to call this the Java Effect, in honor of all those poor souls who
 associate static typing with Java's poor implementation of types. Writing types
-should not be a hindrance or a chore, but a way to be more expressive and
+should not be a hindrance or a chore that leads to vast swaths of boilerplate
+and redundancy, but a way to be more expressive and
 accurate in the code you write. Assuming one bad experience with static typing
 is representative of all static typing is like assuming every implementation of
 OO is the same.
@@ -137,10 +138,10 @@ bar :: Baz -> Quux -> Int
 bar baz quux = doSomething baz + doSomethingElse quux
 ```
 
-We can see immediately that in comparison, Haskell code scales horizontally and
-Python scales vertically. But even more important: we know that there are no
-effectful computations. No state will be harmed during the execution of this
-function.
+We can see immediately that in comparison, Haskell code scales horizontally
+whereas Python scales vertically. But even more important: we know that there
+are no effectful computations. No state will be harmed during the execution of
+this function.
 
 The type signature not only conveys information, but also forms a
 proposition: given a Baz and a Quux, we can prove that the function
@@ -154,14 +155,14 @@ advanced type system like Haskell's, we can distinguish between pure and
 effectful computations based on the type signature alone. If *bar* had the
 capability to engage in IO, it would be reflected in its return type.
 
-There are some properties that are difficult or impossible to enforce
-at the type level<sup>[3](#footnote3)</sup>, so even in this model there is still room for
-testing as a path to greater understanding and confidence in our
-code. Typically, however, the tests will focus on establishing and attempting to
-enforce the properties we expect the code to have. This lets us throw barrels
-full of randomly generated data at our functions instead of having to contrive
-a handful of unit test cases that might seem really cool at the time but give
-a false sense of security for coverage.
+There are some properties that are difficult or impossible to enforce at the
+type level<sup>[3](#footnote3)</sup>, so even in this model there is still room
+for testing as a way to gain confidence in our code. Typically, however, the
+tests will focus on establishing and attempting to enforce the properties we
+expect the code to have. This lets us throw barrels full of randomly generated
+data at our functions instead of having to contrive a handful of unit test cases
+that might seem really cool at the time, but ultimately give a false sense of
+security.
 
 #### Tell me more about these... types
 
