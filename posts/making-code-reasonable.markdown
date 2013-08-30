@@ -206,7 +206,7 @@ reasonable application. Stay tuned!
 available in [PPT](http://www.cs.princeton.edu/~dpw/popl/06/Tim-POPL.ppt) and
 [PDF](http://groups.csail.mit.edu/cag/crg/papers/sweeney06games.pdf)
 
-<sub><a id="footnote3">3.</a> See the [Haskell Wiki page](http://www.haskell.org/haskellwiki/Curry-Howard-Lambek_correspondence)
+<sub><a id="footnote3">3.</a> With some caveats. See the [Haskell Wiki page](http://www.haskell.org/haskellwiki/Curry-Howard-Lambek_correspondence)
 on types as propositions (and more).
 </sub>
 
