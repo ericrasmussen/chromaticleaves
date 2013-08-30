@@ -107,14 +107,17 @@ main = do
 
       compile $ do
           -- create a per-item compiler that will grab a list of posts by tag
-          let comp = \item -> exploreCompiler item tags postCtx recentFirst
+          let comp = \item -> do
+                primaryTag <- getMetadataField' (itemIdentifier item) "usetag"
+                postList (explorePattern tags primaryTag) postCtx recentFirst
+
+          -- create a context to use the filtered post listing
           let exploreCtx = mconcat [ field "posts" comp, baseCtx ]
 
           pandocCompiler
             >>= loadAndApplyTemplate "templates/explore.html" exploreCtx
             >>= applyBase
             >>= relativizeUrls
-
 
     -- our glorious home page
     match "index.html" $ do
@@ -133,7 +136,7 @@ main = do
         route idRoute
         compile $ pandocCompiler >>= applyBase
 
-    -- Render RSS feed
+    -- Render an atom feed for all posts
     create ["rss.xml"] $ do
         route idRoute
         compile $ do
@@ -144,19 +147,19 @@ main = do
 
 
 
---------------------------------------------------------------------------------
-getCurrentYear :: IO String
-getCurrentYear = formatTime defaultTimeLocale "%Y" <$> getCurrentTime
+-- -----------------------------------------------------------------------------
+-- * Contexts
 
+-- | Creates a "year" context from a string representation of the current year
 yearCtx :: String -> Context String
 yearCtx year = field "year" $ \item -> return year
 
---------------------------------------------------------------------------------
+-- | Given a collection of Tags, builds a context with a rendered tag cloud
 tagCloudCtx :: Tags -> Context String
 tagCloudCtx tags = field "tagcloud" $ \item -> rendered
   where rendered = renderTagCloud 85.0 165.0 tags
 
---------------------------------------------------------------------------------
+-- | Creates the default/base context used on all pages
 makeDefaultCtx :: String -> Tags -> Context String
 makeDefaultCtx year tags = mconcat
   [ defaultContext
@@ -164,7 +167,7 @@ makeDefaultCtx year tags = mconcat
   , tagCloudCtx tags
   ]
 
---------------------------------------------------------------------------------
+-- | Creates the default post context used by pages with posts/post listings
 defaultPostCtx :: Tags -> Context String
 defaultPostCtx tags = mconcat
   [ dateField "date" "%B %e, %Y"
@@ -172,7 +175,17 @@ defaultPostCtx tags = mconcat
   , defaultContext
   ]
 
---------------------------------------------------------------------------------
+feedCtx :: Context String
+feedCtx = mconcat
+    [ bodyField "description"
+    , defaultContext
+    ]
+
+-- -----------------------------------------------------------------------------
+-- * Compilers
+
+-- | Creates a compiler to render a list of posts for a given pattern, context,
+-- and sorting/filtering function
 postList :: Pattern
          -> Context String
          -> ([Item String] -> Compiler [Item String])
@@ -182,14 +195,17 @@ postList pattern postCtx sortFilter = do
     itemTpl <- loadBody "templates/post-item.html"
     applyTemplateList itemTpl postCtx posts
 
---------------------------------------------------------------------------------
+-- | Compiles an asset with the sass utility
 sassCompiler :: Compiler (Item String)
 sassCompiler =
   getResourceString
     >>= withItemBody (unixFilter "sass" ["-s", "--scss"])
     >>= return . fmap compressCss
 
---------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- * Atom feed
+
+-- | Builds an atom FeedConfiguration for the site or for a specific tag
 feedConfiguration :: String -> FeedConfiguration
 feedConfiguration title = FeedConfiguration
     { feedTitle       = "chromatic leaves - " ++ title
@@ -199,30 +215,15 @@ feedConfiguration title = FeedConfiguration
     , feedRoot        = "http://chromaticleaves.com"
     }
 
---------------------------------------------------------------------------------
-feedCtx :: Context String
-feedCtx = mconcat
-    [ bodyField "description"
-    , defaultContext
-    ]
+-- -----------------------------------------------------------------------------
+-- * Helpers
 
---------------------------------------------------------------------------------
--- hacky but necessary until I can refactor to use snapshots
+-- | Because I never remember to update the copyright in the footer
+getCurrentYear :: IO String
+getCurrentYear = formatTime defaultTimeLocale "%Y" <$> getCurrentTime
+
+-- | Builds a pattern to match only posts tagged with a given primary tag.
+-- For instance, only matching posts tagged "code" on the explore/code page.
 explorePattern :: Tags -> String -> Pattern
-explorePattern tags usetag = fromList identifiers
-  where identifiers = fromMaybe [] $ lookup usetag (tagsMap tags)
-
--- need to refactor so this can share code with postList
-exploreCompiler :: Item a
-                -> Tags
-                -> Context String
-                -> ([Item String] -> Compiler [Item String])
-                -> Compiler String
-exploreCompiler item tags postCtx sortFilter = do
-  let identifier = itemIdentifier item
-  usetag <- getMetadataField' identifier "usetag"
-  let pattern = explorePattern tags usetag
-  posts   <- sortFilter =<< loadAll pattern
-  itemTpl <- loadBody "templates/post-item.html"
-  applyTemplateList itemTpl postCtx posts
-
+explorePattern tags primaryTag = fromList identifiers
+  where identifiers = fromMaybe [] $ lookup primaryTag (tagsMap tags)
