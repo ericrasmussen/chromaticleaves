@@ -1,0 +1,19 @@
+name:                chromaticleaves
+version:             0.1.0.0
+synopsis:            Eric Rasmussen's blog
+description:         Chromatic Leaves, a blog about things
+homepage:            http://chromaticleaves.com
+license:             BSD3
+license-file:        LICENSE
+author:              Eric Rasmussen
+maintainer:          eric@chromaticleaves.com
+copyright:           2013 Eric Rasmussen
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable site
+  main-is: site.hs
+  build-depends: base       == 4.5.*
+               , hakyll     == 4.2.2.0
+               , old-locale == 1.0.0.4
+               , time       == 1.4
