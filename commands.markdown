@@ -38,14 +38,12 @@ enough that I do not want to forget them.
 | ctrl-r                   | reverse search through bash history          |
 
 
-### Syntax
 
-------------------------
+#### OSX Terminal
 
+A quick way to time tea (first, brew install terminal-notifier):
 
-#### Haskell
+*(sleep 240; terminal-notifier -message 'tea is done!' -title 'TEAAAAAA') &*
 
-| Action                   | Usage                                        |
-|--------------------------|----------------------------------------------|
-| Pattern match record     | f Rec {field="literal"} = undefined          |
+Typically I brew for 3, 4, or 5 minutes, or 180, 240, 300 seconds respectively.
 
