@@ -1,9 +1,10 @@
 ---
 title: Thoughts on Functional Javascript
-date: 2013-09-08
+date: 2013-09-09
 tags: code, javascript
 metadescription: A quick review of Functional Javascript by Michael Fogus
 ---
+
 
 I have long struggled with the necessity of JavaScript and the pain it brings,
 and was naturally very interested in what Michael Fogus's new book had to offer.
@@ -34,9 +35,9 @@ future<sup>[2](#footnote2)</sup>.
 As a functional programming evangelist (read: someone who talks way too much
 about functional programming), one of the most common questions I get from
 object oriented (OO) programmers is how you can reuse code without
-objects. There's a table for that:
+objects. Here's my table for that:
 
-| Language   | Code Reuse via                                         |
+| Language   | Code Reuse                                             |
 -------------+--------------------------------------------------------|
 | Haskell    | Types                                                  |
 | Scala      | Types                                                  |
@@ -52,8 +53,8 @@ reader through building functional APIs that can:
 * view programs in terms of data flow (pipelines)
 
 The examples used throughout the book are illustrative and concise. He even
-manages to build functions for currying and partial application that look and
-feel like the functional abstractions I know and love, without mangling
+manages to build functions for currying and partial application that let me
+employ the functional abstractions I know and love, without mangling
 JavaScript to do it.
 
 
@@ -61,9 +62,9 @@ JavaScript to do it.
 
 Whenever I write JavaScript I have to tread carefully and silently rage at HOW
 DO YOU PEOPLE PROGRAM THIS WAY. JavaScript offers limitless ways to shoot
-yourself in the foot, and is missing a number of constructs I find it
+yourself in the foot, and is missing a number of constructs I find
 increasingly difficult to program without, including algebraic data types. To
-avoid the error prone nature of manually managing inputs and outputs that can be
+avoid the error-prone nature of manually managing inputs and outputs that can be
 many different types of objects, I typically create restrictive APIs that only
 expect and return well-defined objects or classes of objects.
 
@@ -72,18 +73,18 @@ JavaScript's ability to pass around objects of any type. The book's samples are
 meant to be illustrative of course, but you will see examples like a [*flat*
 function](https://github.com/funjs/book-source/blob/bdea86177e3c8b5ab2d27de7e79deb74b1f72b38/chapter06.js#L134)
 that is designed to take an array and recursively flatten any arrays it
-contains. The consequence of course is that the function's sole parameter,
-*ary*, will sometimes be a non-array value that needs to be returned as an
-array.
+contains. One consequence is that the function's sole parameter,
+*ary*, will eventually be a non-array value that needs to be wrapped in an array
+when returned.
 
 But setting aside my usual predilections, if you squint hard enough, you can see
-the values as sum types and accept this as a very reasonable and flexible way to
-write flexible JavaScript code. There is certainly no question that it works, is
-understandable, and takes better advantage of JavaScript than my usual rigid
+these values as sum types and accept this as a very reasonable and flexible way
+to write extensible JavaScript. There is certainly no question that it works, is
+understandable, and takes better advantage of the language than my usual rigid
 adherence to pretending the issue doesn't exist.
 
 Many of the other chapters focus on collections-based programming with higher
-order functions, leveraging primtive types, and encapsulation through
+order functions, leveraging primitive types, and encapsulation through
 functions. Fogus also answers the question of how to take advantage of objects
 without giving into inheritance, and he manages to weave an object compositional
 style (mixins) with a functional API in a very slick way.
