@@ -21,12 +21,13 @@ post on [Making Code Reasonable](/posts/making-code-reasonable.html), you may
 correctly guess that I prefer types, but I write tests (albeit for different
 purposes) either way.
 
-Proponents of dynamic languages<sup>[1](#footnote1)</sup> have learned to solve
-problems in ways that can only be checked with tests, and this particular style
-of problem solving is one of the fundamental disconnects between the types and
-NoTypes crowds. Ask one of these people (including me!) how often they've had to
-write extra unit tests to make up for the lack of a good type system, and you're
-likely to be met with a confused look and a "why, never!"
+Proponents of dynamic languages<sup>[1](#footnote1)</sup> are frequently taught
+to solve problems in ways that can only be checked with tests, and this
+particular style of problem solving is one of the fundamental disconnects
+between the types and NoTypes crowds. Ask one of these people (including me!)
+how often they've had to write extra unit tests to make up for the lack of a
+good type system, and you're likely to be met with a confused look and a "why,
+never!"
 
 It's true that you won't find many tests in Python or JavaScript where the
 programmers are explicitly inspecting the types of objects and secretly wishing
@@ -51,18 +52,15 @@ O, A, B, C, D, E, G, H, and N. This foundation gives you the building blocks for
 working with all possible pairs of digits (00-99) and pairs of letters (OO-NN).
 
 In many languages it would be practical (and expected) for you to model this
-data with the primitives for integers and characters. You could provide
-wrapper or helper functions for them to ensure they only ever used valid digits
-and letters, and then write tests to assert that they respond appropriately to
-bad input.
+data with the primitives for integers and characters. But if you enjoy obsessing
+over failure points in your program, this is unacceptable, because it means that
+every function or method using these values would need to account for the
+possibility of numbers outside the range 0-9.
 
-If you enjoy obsessing over failure points in your program, this is
-unacceptable, because it means that *every* function or method intending to
-operate on these values would need to account for potentially bad input. Short
-of hideous, sprawling code with maddening error checking at every turn, it's
-much more practical to define entry points for validating input before passing
-it to the underlying functions. You can then narrow the scope of your tests to
-those entry points and hope for the best.
+Short of hideous, sprawling code with maddening error checking at every turn,
+it's much more practical to define entry points for validating input before
+passing it to the underlying functions. You can then narrow the scope of your
+tests to those entry points and hope for the best.
 
 But if we step back for a moment, we should be asking whether or not we need
 the full power of integers, characters, strings, and all of the libraries and
@@ -87,9 +85,9 @@ data LetterPair = LetterPair Letter Letter
   deriving Eq
 ```
 
-In the hsmemoryquiz program when we need to convert a Digit to a Letter,
-given that there exists an exact mapping of Digits to Letters in the Dominic
-system, we can write a function with the following signature:
+In the Dominic system there is an exact mapping of Digits to Letters, and in
+the Letter module of hsmemoryquiz we'll need a way to create Letters from
+Digits. We can write a function with the following signature:
 
 ```haskell
 fromDigit :: Digit -> Letter
@@ -99,6 +97,7 @@ This simple declaration gives us powerful reasoning tools:
 
 * The function is total; given a value of type Digit, we can produce a value of type Letter
 * We can enforce at compile time that fromDigit cannot be called with anything but a Digit
+* No logic or tests required to check input, because by definition we only accept Digits
 
 Now we can operate with complete confidence<sup>[2](#footnote2)</sup> that the
 function does what we expect, and does so without affecting other parts of our
@@ -109,14 +108,14 @@ of bad input (and if anyone tries, the program won't compile).
 #### Control flow and staircasing
 
 Inevitably we will need to face the outside world, and types afford us many
-tools for combating bad input. In imperative languages, it's common to throw
-exceptions for bad data and subsequently catch them somewhere else higher up in
-the program. This is a pattern that is convenient to write, but complicates the
-flow of our programs. There is an added mental overhead in having to know which
+tools for combating bad input. In imperative languages, it's common to ignore
+certain kinds of troublesome input and instead throw exceptions when things go
+awry. This is a pattern that is convenient to write, but complicates the flow of
+our programs. There is an added mental overhead in having to know which
 exceptions may be thrown and where they may or may not be caught.
 
 Often we can obviate the need for exceptions by returning values that indicate
-some error condition instead. The problem here is that if you have many values
+some failure condition instead. The problem here is that if you have many values
 that work this way, you can end up with long, complicated code blocks. Let's
 look at an example in python where any of the arguments may be a legitimate
 value or *None*:
@@ -138,17 +137,18 @@ to sometimes check for null, undefined, empty strings, lists with a length of 0,
 etc.
 
 What we're really missing in these languages is a way to express values that may
-be more than one type. One of the canonical Haskell examples is:
+be more than one type. In Haskell we can achieve this with algebraic data types.
+One of the canonical examples is:
 
 ```haskell
 data Either a b = Left a | Right b
 ```
 
-This lets us unambiguously signify error conditions with the Left constructor
-and valid values with the Right. This would even allow us to define a concrete
-type Either String String and reliably differentiate the two cases without
-resorting to string matching, checking for null values, or checking for an empty
-string.
+We can use this to unambiguously signify error conditions with the Left
+constructor and valid values with the Right. This would even allow us to define
+a concrete type Either String String and reliably differentiate the two cases
+without resorting to string matching, checking for null values, or checking for
+an empty string.
 
 More importantly, we can use this as a basis for richer types that
 carry the notion of success or failure cases with them, rather than requiring
@@ -166,12 +166,16 @@ playGame = do
 ```
 
 The Quiz moand stack includes ErrorT, which means that any time we run a
-computation in the Quiz monad (the first two lines in the *do* block), the value
-returned may be either an error or a valid value.  There's no need for altering
-the flow of the program or having a long series of conditionals, because the
-types extracted from Quiz computations already carry that notion of failure
-with them. The function that runs the game can then inspect the final value and
-handle it appropriately:
+computation in the Quiz monad (in this case, the first two lines in the *do*
+block), the value returned may be either an error or a valid value.  There's no
+need to alter the flow of the program or nest a long series of conditionals,
+because the types extracted from Quiz computations already carry that notion of
+failure with them. If the nextAssociation function is unsuccessful (i.e. it
+returns ErrorT's Left case), then the playRound line will not be evaluated, and
+the entire block will evaluate to that Left case.
+
+The function that runs the game can then pattern match on the final value to
+differentiate the two cases:
 
 ```haskell
 runGame :: Registry -> IO ()
@@ -193,15 +197,14 @@ was creating a fairly straightforward example of a Haskell command-line utility
 with several nice touches:
 
 * Lots of code comments
-* QuickCheck test examples
 * Command-line flag parsing
-* Errors handling through types
+* Error handling through types
+* QuickCheck test examples using hspec
 * An interactive prompt via Haskeline (including interrupt handling)
 
 There are of course plenty of great resources out there for learning Haskell,
 and this isn't intended to be a canonical example of How to Write Haskell; there
-are much better and more interesting Haskell programs out
-there<sup>[3](#footnote3)</sup>.
+are much better and more interesting Haskell programs<sup>[3](#footnote3)</sup>.
 
 But many full-featured utilities and programs are not written with beginners in
 mind. If you find yourself writing a lot of smaller utilities or single-file
