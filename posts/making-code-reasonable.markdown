@@ -188,15 +188,23 @@ But even though we have these great resources for learning the Haskell
 *language*, many of them don't discuss how to build a Haskell *application* from
 start to finish, including build files, tests, documentation, and code layout.
 
-I am working on a small command line application to demonstrate many of these
+I am working on a small command-line application to demonstrate many of these
 ideas and serve as a relatively straightforward but complete example. The goal
 will be to make it illustrative and add comments and annotations to reflect on
 possible alternative approaches, which is often an impractical level of
 documentation for programs intended to be used by people to do things.
 
 The project will also favor code confidence over code conciseness or code
-celerity<sup>[5](#footnote5)</sup>. All the while still making a working, and, dare I say it,
-reasonable application. Stay tuned!
+celerity<sup>[5](#footnote5)</sup>. All the while still making a working, and,
+dare I say it, reasonable application. Stay tuned!
+
+#### Update: 9/25/2013
+
+The command-line example program is now available:
+[hsmemoryquiz](https://github.com/ericrasmussen/hsmemoryquiz)
+
+And I cover the motivation and benefits in detail in the new post
+[Striving for Correctness](/posts/haskell-memory-quiz.html).
 
 <hr />
 
