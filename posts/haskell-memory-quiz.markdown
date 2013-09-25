@@ -1,6 +1,6 @@
 ---
 title: Striving for Correctness: A Case Study
-date: 2013-09-24
+date: 2013-09-25
 tags: code, haskell
 metadescription: A case study in using Haskell for the command-line utility hsmemoryquiz
 ---
