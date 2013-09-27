@@ -16,7 +16,7 @@ A fast and stable session implementation for the Pyramid Web Framework,
 using Redis for storage.
 
 * [PyPI](https://pypi.python.org/pypi/pyramid_redis_sessions/)
-* [Github](https://github.com/ericrasmussen/pyramid_redis_sessions)
+* [GitHub](https://github.com/ericrasmussen/pyramid_redis_sessions)
 * [Docs](http://pyramid_redis_sessions.readthedocs.org/en/latest/)
 
 
@@ -26,7 +26,7 @@ A simple MailChimp API wrapper with 100% test coverage and simple exception
 handling.
 
 * [PyPI](https://pypi.python.org/pypi/postmonkey/)
-* [Github](https://github.com/ericrasmussen/postmonkey)
+* [GitHub](https://github.com/ericrasmussen/postmonkey)
 * [Docs](http://python.chromaticleaves.com/docs/postmonkey/)
 
 
@@ -34,7 +34,16 @@ handling.
 
 The hakyll code to generate this blog is completely open source.
 
-* [Github](https://github.com/ericrasmussen/chromaticleaves)
+* [GitHub](https://github.com/ericrasmussen/chromaticleaves)
+
+
+#### hsmemoryquiz
+
+A Haskell utility to help you learn the Dominic System, written mostly as
+example code for anyone learning to write Haskell command-line utilities or
+Haskell programs in general.
+
+* [GitHub](https://github.com/ericrasmussen/hsmemoryquiz)
 
 
 ### Presentations
