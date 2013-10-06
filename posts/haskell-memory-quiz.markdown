@@ -48,7 +48,7 @@ some of the benefits of elevating data and abstractions to the type level.
 ##### Rethinking numbers and letters
 
 The Dominic system is based on a mapping of the digits 0-9 to the letters
-O, A, B, C, D, E, G, H, and N. This foundation gives you the building blocks for
+O, A, B, C, D, E, S, G, H, and N. This foundation gives you the building blocks for
 working with all possible pairs of digits (00-99) and pairs of letters (OO-NN).
 
 In many languages it would be practical (and expected) for you to model this
