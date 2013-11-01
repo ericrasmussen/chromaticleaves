@@ -38,7 +38,7 @@ Death's magic is making you a part of their journey. It's tragic that they never
 got the attention they deserved<sup>[1](#footnote1)</sup>, and far more so that
 lead guitarist/songwriter Chuck Schuldiner passed away at 34. If you missed out
 on The Sound of Perseverance for any reason before, now's the time to get
-it. This metal is just as relevant today as it was in 2008.
+it. This metal is just as relevant today as it was in 1998.
 
 <hr />
 
