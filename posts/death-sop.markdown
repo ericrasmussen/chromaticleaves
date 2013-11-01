@@ -14,7 +14,7 @@ metal to the next level. This is death metal evolved.
 Most tracks open with sparse instrumentation. Deep bass lines, drum solos, lead
 guitar melodies, welcoming you to a new soundscape before the rest of the band
 appears. Before the thick guitar and bass riffs take over, the drums pound
-relentlessly, the scratchy vocals and lyrics invading your consciousness. Soon
+relentlessly, the scratchy vocals and lyrics invade your consciousness. Soon
 all of the instruments are building and pushing and driving to create an
 oppressive atmosphere, making it harder to breathe, harder to think, a deadly
 wall of sound compelling and propelling you deeper into their vision.
@@ -38,7 +38,7 @@ Death's magic is making you a part of their journey. It's tragic that they never
 got the attention they deserved<sup>[1](#footnote1)</sup>, and far more so that
 lead guitarist/songwriter Chuck Schuldiner passed away at 34. If you missed out
 on The Sound of Perseverance for any reason before, now's the time to get
-it. This metal is just as relevant and innovative today as it was in 2008.
+it. This metal is just as relevant today as it was in 2008.
 
 <hr />
 
