@@ -83,10 +83,10 @@ We can now write plain old Haskell code to:
 * bind the result to the `<activeUsers>` node
 
 One helpful way of viewing interpreted Heist is that it's not so much a
-templating engine as a library for manipulating templates. An API for taking a
-template apart node by node and putting it back together again, optionally
-splicing in dynamically generated elements or text. In fact, a Heist template is
-literally a list of nodes:
+templating engine as a library for manipulating
+templates.<sup>[2](#footnote2)</sup> An API for taking a template apart node by node
+and putting it back together again, optionally splicing in dynamically generated
+elements or text. In fact, a Heist template is literally a list of nodes:
 
 ```haskell
 -- a Node is an element in a Document from the Text.XmlHtml library
@@ -142,7 +142,7 @@ programmers are solely responsible for integrating markup), or that designer
 preferences vary. I have worked with designers that only hand off static assets
 and require the developers to handle 100% of the integration, and I've worked
 with designers that take the time to learn enough of your chosen framework and
-templating system to work with it.<sup>[2](#footnote2)</sup>
+templating system to work with it.<sup>[3](#footnote3)</sup>
 
 The bottom line is we're discussing matters of taste and preference, so there is
 no right answer. It depends on the context and how well it's going to work for
@@ -187,5 +187,9 @@ Contributions or issues/ideas are very welcome.
 phrase I repeat far too often. I expect I'll continue to use more and more
 obscure variations on that theme. Steel yourselves.</sub>
 
-<sub><a id="footnote2">2.</a> If you know of any actual studies on designer
+<sub><a id="footnote2">2.</a> It's actually more powerful and subtle than that:
+you can use the library to implement your own domain-specific markup
+languages.</sub>
+
+<sub><a id="footnote3">3.</a> If you know of any actual studies on designer
 preferences, please send details to eric @ chromatic leaves dot com.</sub>
