@@ -1,6 +1,6 @@
 ---
 title: The Great Template Heist
-date: 2013-11-26
+date: 2013-11-27
 tags: code, haskell
 metadescription: An odd introduction to using Heist templates in the Haskell Snap web framework
 ---
