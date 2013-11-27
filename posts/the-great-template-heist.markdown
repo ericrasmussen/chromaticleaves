@@ -36,8 +36,8 @@ your markup:
 ```
 
 Which, if you're both programmer and designer, works pretty well most of the
-time. However, many find this approach... distasteful. An alternative is
-Chameleon's TAL (Template Attribute Language), where you embed logic in tag
+time. However, some find this approach... distasteful. An alternative is
+a TAL (Template Attribute Language) like Chameleon, where you embed logic in tag
 attributes so you can still enforce proper markup:
 
 ```
@@ -61,9 +61,7 @@ templates. This may not be *entirely* accurate (it does have a couple of basic
 constructs built into the templating language, such as bind and apply), but
 compared to our other examples it's a whole new world of template purity.
 
-One helpful way of viewing Heist is that it's not so much a templating engine
-as a library for manipulating templates. Our previous user example might
-look like this:
+Our previous user example might look like this:
 
 ```
 <!-- heist example: displaying a table of active users -->
@@ -81,13 +79,14 @@ We can now write plain old Haskell code to:
 
 * filter the user list for active users
 * map over the list to create user name and email splices
-* bind the splices list to the `<activeUsers>` node
-* repeat the inner nodes of `<activeUsers>` for each user
+* run the user splices against the contents of `<activeUsers>`
+* bind the result to the `<activeUsers>` node
 
-This lets us refine our earlier description of Heist: we can think of it as an
-API for taking a template apart node by node and putting it back together again,
-optionally splicing in dynamically generated elements or text. In fact, a Heist
-template is literally a list of nodes:
+One helpful way of viewing interpreted Heist is that it's not so much a
+templating engine as a library for manipulating templates. An API for taking a
+template apart node by node and putting it back together again, optionally
+splicing in dynamically generated elements or text. In fact, a Heist template is
+literally a list of nodes:
 
 ```haskell
 -- a Node is an element in a Document from the Text.XmlHtml library
@@ -97,13 +96,15 @@ type Template = [Node]
 Here's the supporting code to bring it all together:
 
 ```haskell
--- assuming we have a way to pass in the filtered list of Users
+-- binds a list of splices to <activeUsers> (assumes we pass in active users)
 activeUsersSplices :: [User] -> Splices (SnapletISplice App)
 activeUsersSplices users = "activeUsers" ## (bindUsers users)
 
+-- maps over a list of users to create splices for each
 bindUsers :: [User] -> SnapletISplice App
 bindUsers = I.mapSplices $ I.runChildrenWith . userSplices
 
+-- creates the <userName/> and <userEmail/> splices for an individual user
 userSplices :: Monad n => User -> Splices (I.Splice n)
 userSplices (User name email) = do
   "userName"  ## I.textSplice name
@@ -127,7 +128,7 @@ next task is learning the libraries. Here's the high level breakdown:
 #### Intermission: new paint for the bikeshed
 
 Choosing a template engine is kind of like choosing a text editor: everyone's
-sure their approach is The Right Way, and sooner or later you'll be dragged into
+sure their approach is best, and sooner or later you'll be dragged into
 silly arguments.
 
 With programmable template engines, people are often quick to mention how we
@@ -178,10 +179,7 @@ to see
 that demonstrate different ways to repeat or conditionally include text and
 templates.
 
-Contributions or issues/ideas are very welcome. As I work through other examples
-I will try to distill them and add them to this repo, with the intent of
-building up a nice set of Heist examples in the context of a working Snap
-application.
+Contributions or issues/ideas are very welcome.
 
 <hr />
 
