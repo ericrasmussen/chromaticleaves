@@ -1,5 +1,5 @@
 ---
-title: Compiled Heist
+title: Compiled Heist: The Walkthrough
 date: 2013-12-03
 tags: code, haskell
 metadescription: An odd introduction to using compiled Heist templates in the Haskell Snap web framework
@@ -11,7 +11,7 @@ before, you may want to start with the much gentler introduction from my
 previous post: [The Great Template Heist](/posts/the-great-template-heist.html).
 
 
-#### I feel the need for speed
+#### There can only be one (not really)
 
 Heist now comes in two flavors: interpreted and compiled. The former has been
 around longer, is more flexible, and has a very accessible API. It is plenty
@@ -27,40 +27,37 @@ rendering at more than 3000x the speed of their interpreted
 equivalents.<sup>[1](#footnote1)</sup>
 
 The price you pay for these huge gains in performance is having to specify and
-load your splices, once, at the top level of your application.
+load all of your splices, once, at the top level of your application.
 
 Take a moment to let that sink in: all of your top level splices need to be
 pre-defined and available at the time your application loads. Unlike interpreted
-Heist, you can't bind local splices to a template at render time. You can only
-render the template in a Handler, and it will implicitly use any splices already
-defined in your HeistConfig.
+Heist, you can't bind local splices to a template at render time. When you
+render a compiled template in a Snap Handler, the only splices it can use are
+those you defined in your HeistConfig.
 
 #### Runtime splices and node reuse
 
 If you're only familiar interpreted splices, you might be wondering how this
 inversion of control affects us. Specifically, two questions come to mind:
 
-1. If we need to pre-define our splices, how can we fill in values determined
-   only at runtime?
-2. If we can only bind a node name to a single compiled splice at the top level,
-   how can we reuse nodes?
+1. If we need to pre-define our splices, how can we render dynamic values?
+2. If we can only bind a node to a single compiled splice, how can we reuse nodes?
 
 The first problem can be solved with the notion of a RuntimeSplice, which you
 can think of as a computation that will be evaluated at runtime each time its
 needed, letting you perform the IO and logic you need for accessing databases,
 reading from files, etc.
 
-The second question is answered by rendering a compiled splice within the top
+We can reuse nodes by declaring any compiled splices we need within the top
 level splice. You can think of it as nesting splices, or inner splices, or
-binders full of splices, or...
-
-Let's just work through an example.
+binders full of splices, or... let's just work through an example.
 
 
 #### Listing things
 
-Let's look at an example, rendering a list of tutorials in a table. Here's the
-relevant part of our template:
+Here's an example template where the `<allTutorials>` node contains nodes
+representing one table row for a single tutorial. We'd like to be able to repeat
+those nodes once for each tutorial in a list of tutorials:
 
 ```html
 <table>
@@ -89,24 +86,20 @@ relevant part of our template:
 </table>
 ```
 
-In this case we know we'll need to reuse the tutorialURL, tutorialTitle, and
-tutorialAuthor nodes once for each tutorial we have. But we only have one top
-level splice that we'll need to bind in our HeistConfig: allTutorials.
-
 We'll get started by defining a simple tutorial type:
 
 ```haskell
 data Tutorial = Tutorial {
-    title  :: T.Text
-  , url    :: T.Text
-  , author :: T.Text
+    title  :: Text
+  , url    :: Text
+  , author :: Text
   }
 ```
 
 Now, remember we mentioned being able to defer computations until runtime? To
-keep things simple we're going to return a constant list of Tutorials as a
-RuntimeSplice computation, but in a real world app you could query a database
-or some other source here:
+keep things simple we're going to return a constant list of Tutorials as the
+result of a RuntimeSplice computation, but in a real world app you could query a
+database or obtain the list from another source:
 
 ```haskell
 tutorialsRuntime :: Monad n => RuntimeSplice n [Tutorial]
@@ -118,8 +111,8 @@ tutorialsRuntime = return [ Tutorial "title1" "url1" "author1"
 Here's where things get interesting: there is virtually no API for working
 directly with RuntimeSplices, so we can't easily inspect the underlying runtime
 value and bind the result to a node name. Instead, we're going to create
-Splices containing a function that can do this for us (C is the Heist.Compiled
-module in the following examples):
+Splices containing a function that can do this for us. Note that in the examples
+below, Heist.Compiled is imported as "C".
 
 ```haskell
 splicesFromTutorial :: Monad n => Splices (RuntimeSplice n Tutorial -> C.Splice n)
@@ -129,15 +122,19 @@ splicesFromTutorial = mapS (C.pureSplice . C.textSplice) $ do
   "tutorialAuthor" ## author
 ```
 
-Remember that `title`, `url`, and `author` are functions defined in our Tutorial
-type. So our `do` block contains a value of type Splices (Tutorial -> T.Text).
-We then map over those splices to create pure splices from each. We can gain
-confidence in this approach by spending time working with the available higher
-level functions in the Heist.Compiled module, and no amount of explanation is
-going to make this approach immediately clear.
+Remember that title, url, and author are functions defined in our Tutorial
+type. So our do block contains a value of type `Splices (Tutorial -> Text)`.
+We then map over those splices to create pure splices from each.
 
-However, here are the type signatures (from Heist 13.02) so you can see how
-all the types line up:
+If this all sounds a little heavy, don't panic! It takes some time working with
+functions in the Heist.Compiled module to build fluency. No amount of
+explanation is going to make the reason for this immediately clear; it's simply
+one way we can leverage the higher level compiled splice functions we have
+available to us.
+
+But you *should* make an effort to follow the types as we go, even if only in
+the abstract. Here are the type signatures for the Heist functions we used
+above:
 
 ```haskell
 textSplice :: (a -> Text) -> a -> Builder
@@ -147,15 +144,15 @@ pureSplice :: Monad n => (a -> Builder) -> RuntimeSplice n a -> Splice n
 mapS :: (a -> b) -> Splices a -> Splices b
 ```
 
-In our case, the splices first contain a function of Tutorial -> Text, which is
-passed to textSplice, giving us a function of Text -> Builder, which is what
-pureSplice expects as its first argument. The end result is a series of splices
-containing functions of RuntimeSplice n Tutorial -> C.Splice n.
+In our case, the splices first contain a function of `Tutorial -> Text`, which
+is passed to textSplice, giving us a function of `Text -> Builder`, which is
+what pureSplice expects as its first argument.
 
-A common pattern in Heist is to take splices containing a function of this type,
-then apply it to C.manyWithSplices C.runChildren. The result is a function
-that will be able to take our original runtime list of tutorials and produce
-a compiled splice:
+The end result is a series of splices where node names map to functions of
+`RuntimeSplice n Tutorial -> C.Splice n`. Compiled Heist gives us a few options
+for working with splices containing functions of this type. Here's how we can
+map over a list of runtime tutorials and create a single compiled splice
+containing all of the rendered tutorial splices:
 
 ```haskell
 renderTutorials :: Monad n => RuntimeSplice n [Tutorial] -> C.Splice n
@@ -178,13 +175,14 @@ manyWithSplices :: Monad n
 It's a lot to take in, but follow through step by step to see that everything
 lines up.
 
-To summarize what we've done so far: we now have a way to take a runtime
-list of tutorials and create splices from each (that correspond to the nodes in
-our template).
+Now we have a way to process a runtime computation returning a list of
+tutorials, create individual tutorial splices for each tutorial, and return it
+as a single compiled splice. This is a very important point that gets to the
+core of compiled Heist: we can reuse splices however we want as long as we
+compile them down to a single splice this way.
 
-Next, we'll need to bind this list of splices to the outer node in our template,
-"allTutorials". We can do that by passing the runtime to our renderTutorials
-function, and creating splices from the result:
+We can then create top level splices that will map the outer `<allTutorials>`
+node to this compiled splice:
 
 ```haskell
 allTutorialSplices :: Monad n => Splices (C.Splice n)
@@ -192,8 +190,8 @@ allTutorialSplices =
   "allTutorials" ## (renderTutorials tutorialsRuntime)
 ```
 
-The `allTutorialSplices` can now be added to our top level HeistConfig so it
-will be available whenever we render the tutorials template:
+Once we have the fully compiled splices, we can add them to our HeistConfig so
+it will be available to our template when rendered:
 
 ```haskell
 app :: SnapletInit App App
@@ -204,70 +202,63 @@ app = makeSnaplet "app" "A snap demo application." Nothing $ do
     -- the rest of your SnapletInit
 ```
 
-At this point all that remains is creating a Snap handler to render our
-template:
+At this point all that remains is rendering the template in a Snap handler:
 
 ```haskell
 loopHandler :: Handler App App ()
 loopHandler = cRender "tutorials"
 ```
 
-Note again that unlike interpreted splices, we don't provide any local splices
-specific to the template. When the template is rendered, it will find those
-splices in our HeistConfig.
+Notice again that unlike interpreted splices, we don't (and can't!) provide
+local splices specific to this template. When our handler renders the template,
+those splices will be automatically found in our HeistConfig.
 
-Note that the above example is a simplified version of the working, annotated
-code available
-[here](https://github.com/ericrasmussen/snap-heist-examples/blob/master/src/handlers/LoopCompiled.hs).
+The above walkthrough will hopefully give you enough insight to get started,
+but check out the
+[snap-heist-examples](https://github.com/ericrasmussen/snap-heist-examples/)
+repo for a complete working version (with all of the required imports), other
+examples, and a cabal file listing the library versions you'll need.
 
+#### Choosing between interpreted and compiled
 
-#### Is it worth it?
+It'd be nice if I could tell you to start with interpreted splices on your next
+project and only move to compiled splices when you need extra speed. I'm all for
+keeping things simple and avoiding premature optimization, and interpreted
+splices are plenty fast for many use cases.<sup>[2](#footnote2)</sup>
 
-The big question for me right now is whether the apps I'm working on would
-benefit the most from interpreted or compiled Heist. I definitely find it easier
-to think in terms of interpreted splices, and normally I advise against
-premature optimization.
+What gives me pause is that compiled splices give you a dramatic performance
+improvement without much extra effort, provided you plan for them in the
+beginning. This extra effort isn't a bad thing either: it forces you to really
+think through how you obtain data and expose it to templates at the application
+level, whereas interpreted splices make it a little easier to play fast and
+loose with splices that can change locally depending on the template and
+particular view.
 
-However, in this case there are two factors that have me going down the compiled
-road:
+Compiled splices only introduce one major caveat: it won't stop you from
+declaring splices with the same node name, and it will happily let you overwrite
+duplicate values. Let's say you make two different compiled splices for a
+"userName" node used in separate templates, and put both in your Heist config.
+One of them will be silently overwritten, and the value it returns could be used
+in both templates.
 
-1. The speed difference really is that dramatic, and
-2. Porting interpreted to compiled is not trivial
-
-Using compiled Heist requires a very different mindset. If you suspect you may
-ever need the performance benefits, it's likely worth your time to invest in
-structuring your code and templates around compiled from the beginning.
-
-The unexpected benefit to this approach is being forced to consider upfront
-how you produce data and expose it to templates, which at least for me has me
-wanting to instinctively minimize the number of top level splices.
-
-There are some caveats with compiled Heist of course. Some are shared with
-interpreted Heist: because templates are treated as data rather than code, you
-can get runtime errors if you remove or modify templates (this is intentional:
-the upside is you don't need to recompile to modify your templates).
-
-The only new caveat is that since you can't express the notion of "render this
-template with this specific set of splices", you have to be careful to make sure
-you don't reuse node names at the top level. For instance, if you have one type
-of `<userEmail>` node in a profile template, and another in an account
-management template, your top level config will gladly accept both (no compile
-time errors) but only retain one, possibly leading to confusing errors.
-
-I do not think it is difficult to avoid a problem like this, but in larger
-projects it definitely requires care and thought.
-
+I can think of a lot of ways this could be very dangerous (say, accidentally
+displaying every user's account on an individual user profile page because you
+used the same node name for both). I do not think this is a likely accident, but
+you should definitely take precautions to ensure your Heist config doesn't
+contain any surprises. Hopefully at some point in the future we'll get a way to
+specify compiled splices for particular templates so we can explicitly control
+this behavior.
 
 #### More examples and tutorials
 
 I updated my [snap-heist-examples
-repo](https://github.com/ericrasmussen/snap-heist-examples) repo with comparable
+repo](https://github.com/ericrasmussen/snap-heist-examples) with comparable
 compiled versions of the original interpreted examples. It's not a bad place to
 start if you want to see Heist used in the context of a Snap application, and it
 should be relatively straightforward to clone the repo and build the app locally
 if you need a playground for learning Snap and Heist.
 
-Here are some additional resources for getting started:
+Here are some additional resources for learning more:<sup>[3](#footnote3)</sup>
 
 * [Heist Template Tutorial](http://snapframework.com/docs/tutorials/heist)
 * [Compiled Splices Tutorial](http://snapframework.com/docs/tutorials/compiled-splices)
@@ -279,5 +270,13 @@ Here are some additional resources for getting started:
 <hr />
 
 <sub><a id="footnote1">1.</a> Details available in the [original
-announcement](http://snapframework.com/blog/2012/12/9/heist-0.10-released)</sub>
+announcement](http://snapframework.com/blog/2012/12/9/heist-0.10-released).</sub>
 
+<sub><a id="footnote2">2.</a> We often talk about speed in relative terms as
+if it's meaningful, but it's not. Unless you benchmark and know what your
+expected load is, you really can't rule out interpreted splices on the grounds
+that they "aren't fast enough" for you, even though it's tempting.</sub>
+
+<sub><a id="footnote3">3.</a> If you write a Heist tutorial and would like to
+add it to the list, [open an issue](https://github.com/ericrasmussen/chromaticleaves/issues)
+or send a pull request.</sub>
