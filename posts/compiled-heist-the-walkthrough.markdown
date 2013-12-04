@@ -1,6 +1,6 @@
 ---
 title: Compiled Heist: The Walkthrough
-date: 2013-12-03
+date: 2013-12-04
 tags: code, haskell
 metadescription: An odd introduction to using compiled Heist templates in the Haskell Snap web framework
 ---
@@ -18,14 +18,14 @@ around longer, is more flexible, and has a very accessible API. It is plenty
 fast for many use cases, but inefficient because it requires traversing
 templates node by node each time they're rendered.
 
-Compiled Heist takes a different view: it compiles as much of the templates down
-to ByteStrings as possible, letting you fill in runtime values only where you
-need them. The result was a staggering performance gain, with some compiled
+Compiled Heist takes a different approach: it compiles as much of the templates
+down to ByteStrings as possible, letting you fill in runtime values only where
+you need them. The result is a staggering performance gain, with some compiled
 templates rendering at more than 3000x the speed of their interpreted
 equivalents.<sup>[1](#footnote1)</sup>
 
 The price you pay for these huge gains in performance is having to specify and
-load all of your splices, once, at the top level of your application.
+load all of your compiled splices, once, at the top level of your application.
 
 Take a moment to let that sink in: all of your top level splices need to be
 pre-defined and available at the time your application loads. Unlike interpreted
@@ -53,7 +53,7 @@ binders full of splices, or... nevermind. Let's just work through an example.
 
 #### Listing things
 
-Here's an example template where the `<allTutorials>` node contains nodes
+Here's a sample template where the `<allTutorials>` node contains nodes
 representing one table row for a single tutorial. We'd like to be able to repeat
 those nodes once for each tutorial in a list of tutorials:
 
@@ -214,7 +214,7 @@ those splices will be automatically found in our HeistConfig.
 The above walkthrough will hopefully give you enough insight to get started,
 but check out the
 [snap-heist-examples](https://github.com/ericrasmussen/snap-heist-examples/)
-repo for a complete working version (with all of the required imports), other
+repo for a complete working version with all of the required imports, other
 examples, and a cabal file listing the library versions used here.
 
 #### Choosing between interpreted and compiled
