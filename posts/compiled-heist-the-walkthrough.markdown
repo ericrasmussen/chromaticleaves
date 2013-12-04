@@ -35,7 +35,7 @@ those you defined in your HeistConfig.
 
 #### Runtime splices and node reuse
 
-If you're only familiar interpreted splices, you might be wondering how this
+If you're only familiar with interpreted splices, you might be wondering how this
 inversion of control affects us. Specifically, two questions come to mind:
 
 1. If we need to pre-define our splices, how can we render dynamic values?
@@ -110,7 +110,7 @@ Here's where things get interesting: there is virtually no API for working
 directly with RuntimeSplices, so we can't easily inspect the underlying runtime
 value and bind the result to a node name. Instead, we're going to create
 Splices containing a function that can do this for us. Note that in the examples
-below, Heist.Compiled is imported as "C".
+below, Heist.Compiled is imported as `C`.
 
 ```haskell
 splicesFromTutorial :: Monad n => Splices (RuntimeSplice n Tutorial -> C.Splice n)
