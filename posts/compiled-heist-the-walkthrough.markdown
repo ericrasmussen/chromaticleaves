@@ -20,10 +20,8 @@ templates node by node each time they're rendered.
 
 Compiled Heist takes a different view: it compiles as much of the templates down
 to ByteStrings as possible, letting you fill in runtime values only where you
-need them.
-
-The result was a staggering performance gain, with some compiled templates
-rendering at more than 3000x the speed of their interpreted
+need them. The result was a staggering performance gain, with some compiled
+templates rendering at more than 3000x the speed of their interpreted
 equivalents.<sup>[1](#footnote1)</sup>
 
 The price you pay for these huge gains in performance is having to specify and
@@ -50,7 +48,7 @@ reading from files, etc.
 
 We can reuse nodes by declaring any compiled splices we need within the top
 level splice. You can think of it as nesting splices, or inner splices, or
-binders full of splices, or... let's just work through an example.
+binders full of splices, or... nevermind. Let's just work through an example.
 
 
 #### Listing things
@@ -178,8 +176,8 @@ lines up.
 Now we have a way to process a runtime computation returning a list of
 tutorials, create individual tutorial splices for each tutorial, and return it
 as a single compiled splice. This is a very important point that gets to the
-core of compiled Heist: we can reuse splices however we want as long as we
-compile them down to a single splice this way.
+core of compiled Heist: we can reuse splices (and thus nodes in a template)
+however we want, as long as we compile them down to a single splice this way.
 
 We can then create top level splices that will map the outer `<allTutorials>`
 node to this compiled splice:
@@ -205,8 +203,8 @@ app = makeSnaplet "app" "A snap demo application." Nothing $ do
 At this point all that remains is rendering the template in a Snap handler:
 
 ```haskell
-loopHandler :: Handler App App ()
-loopHandler = cRender "tutorials"
+tutorialHandler :: Handler App App ()
+tutorialHandler = cRender "tutorials"
 ```
 
 Notice again that unlike interpreted splices, we don't (and can't!) provide
@@ -217,7 +215,7 @@ The above walkthrough will hopefully give you enough insight to get started,
 but check out the
 [snap-heist-examples](https://github.com/ericrasmussen/snap-heist-examples/)
 repo for a complete working version (with all of the required imports), other
-examples, and a cabal file listing the library versions you'll need.
+examples, and a cabal file listing the library versions used here.
 
 #### Choosing between interpreted and compiled
 
@@ -234,7 +232,7 @@ level, whereas interpreted splices make it a little easier to play fast and
 loose with splices that can change locally depending on the template and
 particular view.
 
-Compiled splices only introduce one major caveat: it won't stop you from
+Compiled splices only introduce one major caveat: they won't stop you from
 declaring splices with the same node name, and it will happily let you overwrite
 duplicate values. Let's say you make two different compiled splices for a
 "userName" node used in separate templates, and put both in your Heist config.
