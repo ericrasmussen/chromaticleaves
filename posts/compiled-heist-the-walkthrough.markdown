@@ -234,10 +234,10 @@ particular view.
 
 Compiled splices only introduce one major caveat: they won't stop you from
 declaring splices with the same node name, and it will happily let you overwrite
-duplicate values. Let's say you make two different compiled splices for a
-"userName" node used in separate templates, and put both in your Heist config.
-One of them will be silently overwritten, and the value it returns could be used
-in both templates.
+duplicate values.<sup>[3](#footnote3)</sup> Let's say you make two different
+compiled splices for a "userName" node used in separate templates, and put both
+in your Heist config.  One of them will be silently overwritten, and the value
+it returns could be used in both templates.
 
 I can think of a lot of ways this could be very dangerous (say, accidentally
 displaying every user's account on an individual user profile page because you
@@ -256,7 +256,7 @@ start if you want to see Heist used in the context of a Snap application, and it
 should be relatively straightforward to clone the repo and build the app locally
 if you need a playground for learning Snap and Heist.
 
-Here are some additional resources for learning more:<sup>[3](#footnote3)</sup>
+Here are some additional resources for learning more:<sup>[4](#footnote4)</sup>
 
 * [Heist Template Tutorial](http://snapframework.com/docs/tutorials/heist)
 * [Compiled Splices Tutorial](http://snapframework.com/docs/tutorials/compiled-splices)
@@ -275,6 +275,10 @@ if it's meaningful, but it's not. Unless you benchmark and know what your
 expected load is, you really can't rule out interpreted splices on the grounds
 that they "aren't fast enough" for you, even though it's tempting.</sub>
 
-<sub><a id="footnote3">3.</a> If you write a Heist tutorial and would like to
+<sub><a id="footnote3">3.</a>The [SpliceAPI module](http://hackage.haskell.org/package/heist-0.13.0.2/docs/Heist-SpliceAPI.html)
+exports a "#!" combinator that is similar to "##" but throws an error if there is a duplicate.
+</sub>
+
+<sub><a id="footnote4">4.</a> If you write a Heist tutorial and would like to
 add it to the list, [open an issue](https://github.com/ericrasmussen/chromaticleaves/issues)
 or send a pull request.</sub>
