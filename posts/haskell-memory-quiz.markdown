@@ -165,7 +165,7 @@ playGame = do
     Stop     -> return ()
 ```
 
-The Quiz moand stack includes ErrorT, which means that any time we run a
+The Quiz monad stack includes ErrorT, which means that any time we run a
 computation in the Quiz monad (in this case, the first two lines in the *do*
 block), the value returned may be either an error or a valid value.  There's no
 need to alter the flow of the program or nest a long series of conditionals,
