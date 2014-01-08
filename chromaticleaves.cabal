@@ -13,7 +13,7 @@ cabal-version:       >=1.8
 
 executable site
   main-is: site.hs
-  build-depends: base       == 4.5.*
-               , hakyll     == 4.2.2.0
-               , old-locale == 1.0.0.4
-               , time       == 1.4
+  build-depends: base       >= 4.5.0.0
+               , hakyll     >= 4.2.2.0
+               , old-locale >= 1.0.0.4
+               , time       >= 1.4
