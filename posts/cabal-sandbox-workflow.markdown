@@ -47,10 +47,10 @@ using version 1.18.0 of the Cabal library
 #### Example: building this blog
 
 My blog is created with [Hakyll](http://jaspervdj.be/hakyll/), a Haskell library
-with many dependencies. If you wanted to start your own Hakyll blog and use mine
-as a starting point, it's entirely possible (and likely) that something in the
-chain of dependencies will conflict with Haskell libraries you have installed at
-the system level.
+with many dependencies. If you wanted to learn Hakyll and use my code as a
+starting point, it's entirely possible (and likely) that something in the chain
+of dependencies will conflict with Haskell libraries you have installed at the
+system level.
 
 Here's how you can build `chromaticleaves` in a sandbox to avoid these issues:
 
@@ -101,18 +101,17 @@ Which will start GHCi with all of the top level functions from the
 
 When you cabal install anything in your sandbox (including any executables from
 the software you're developing), they're placed in
-*your/sandbox/.cabal-sandbox/bin*. It's very convenient to add the relative path
-to your system's [$PATH
+*your/sandbox/.cabal-sandbox/bin*. It's convenient to add this relative
+path to your system's [$PATH
 variable](http://en.wikipedia.org/wiki/PATH_%28variable%29):
 
 ```
 .cabal-sandbox/bin
 ```
 
-Preferably adding it before your system cabal and other bin folders. Specifying
-it as a relative path means that when your current working directory contains a
-sandbox, the binaries installed there take priority, otherwise that path will be
-ignored.
+Preferably adding it before your user cabal bin and other bin
+folders. Specifying it as a relative path means that when your current working
+directory contains a sandbox, any binaries installed there take precedence.
 
 However, note that this only works for executables installed with "cabal
 install" in your sandbox. There's also a "cabal build" command that creates dist
@@ -120,9 +119,9 @@ files in meaningfully named subfolders. The command will work just fine, but
 note that the simple relative path we used above won't pick up any binaries
 installed that way.
 
-If you followed along on the above example, then going to the chromaticleaves
-directory should automatically place the sandboxed `site` on your path. You can
-verify with:
+If you followed along on the above blog building example, then going to the
+chromaticleaves directory should automatically place the sandboxed `site` on
+your path. You can verify with:
 
 ```
 $ which site
@@ -132,15 +131,13 @@ $ which site
 #### Ignorables
 
 Initializing a cabal sandbox will add a hidden folder and a config file to your
-current working directory:
+current working directory. If you manage your project with version control, you
+should add these to your ignore/boring files:
 
 ```
 .cabal-sandbox/
 cabal.sandbox.config
 ```
-
-Definitely worth adding to your ignore/boring files for whichever version
-control system you use.
 
 #### Further reading
 
