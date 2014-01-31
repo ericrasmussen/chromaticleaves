@@ -204,7 +204,7 @@ If you're clicking interactively through a test site and every email looks like
 discomfiting.
 
 For the domain portion of the email address, we'll prepare a small list of
-popular domains and a made up weighted values to decide how frequently each
+popular domains and made up weighted values to decide how frequently each
 should occur (we'll see how to make use of these values soon):
 
 > emailDomains :: [(Int, Gen Text)]
