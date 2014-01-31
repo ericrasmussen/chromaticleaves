@@ -1,6 +1,6 @@
 ---
 title: Arbitrary Fun: Generating User Profiles with QuickCheck
-date: 2014-01-27
+date: 2014-01-31
 tags: code, haskell
 metadescription: How to use QuickCheck to generate random data for other programs
 ---
@@ -11,7 +11,7 @@ recommend checking out the HaskellWiki's
 if you've never used it.
 
 But QuickCheck does more than help us write tests: it offers an efficient, rich
-API for randomly generating data. We're going to show how you could generate a
+API for randomly generating data. We're going to show how you can generate a
 CSV file with potentially millions of fake user records. The main use case is
 populating a database with loads of data for interactive testing, but this
 method is also useful for testing outside programs and bulk data jobs.
@@ -54,7 +54,7 @@ on many social media sites:
 > profileText profile = T.intercalate "," [
 >     firstName profile
 >   , lastName  profile
->   , T.pack . show $ email    profile
+>   , emailToText   $ email    profile
 >   , T.concat ["\"", password profile, "\""]
 >   , T.pack . show $ gender   profile
 >   , T.pack . show $ birthday profile
@@ -72,10 +72,10 @@ Next we'll create our custom Email, Gender, and Birthday types:
 > data Email = Email {
 >     local  :: Text
 >   , domain :: Text
->   }
+>   } deriving Show
 >
-> instance Show Email where
->   show e = T.unpack $ T.concat [local e, "@", domain e]
+> emailToText :: Email -> Text
+> emailToText e = T.concat [local e, "@", domain e]
 >
 > data Gender = Female | Male
 >   deriving Show
@@ -96,8 +96,10 @@ Next we'll create our custom Email, Gender, and Birthday types:
 QuickCheck has an
 [Arbitrary](http://hackage.haskell.org/package/QuickCheck-2.6/docs/Test-QuickCheck.html#g:7)
 typeclass that you can use for defining how to randomly generate a piece of data
-for a given type. Here we'll define a Gender instance using *elements* (`[a] ->
-Gen a`):
+for a given type. Arbitrary instances only require you to supply a definition of
+*arbitrary* (`Gen a`).
+
+Here we'll define a Gender instance using *elements* (`[a] -> Gen a`):
 
 > instance Arbitrary Gender where
 >   arbitrary = elements [Female, Male]
@@ -126,10 +128,11 @@ defined names and passwords to all be of type Text. How can we define
 a single instance of Arbitrary Text to cover all of these cases?
 
 There are several ways to approach this problem, and in a real application you
-could make a strong case for creating new data types (or newtypes) for each of
-these fields. But in our case the simplest answer is to not define an instance
-of Arbitrary for the name and field records. The *arbitrary* function is type
-`Gen a`, and we can write our own functions of this type without Arbitrary:
+could make a strong argument for creating new data types (or newtypes) for each
+of these fields. But in our example, the simplest answer is to not define an
+instance of Arbitrary for the name and field records. The *arbitrary* function
+is type `Gen a`, and we can write our own functions of this type without
+Arbitrary:
 
 > -- creates a text password of random length from the characters A-z, 0-9, and:
 > --   #$%&'()*+,-./:;<=>?@[\]^_`{|}~
@@ -187,7 +190,7 @@ And finally, our function for loading all of the NameGenerators:
 >                                    <*> nameGenFromFile "male_first_names"
 >                                    <*> nameGenFromFile "last_names"
 
-Hardcoding filepaths isn't exactly a Best Practice<sup>(TM)</sup>, but in
+Hardcoding filepaths isn't exactly a Best Practice<sup>TM</sup>, but in
 this case if a file isn't found, we want the program to fail hard, and the
 default "&lt;filepath&gt;: openFile: does not exist (No such file or directory)" error
 message is sufficient.
@@ -198,12 +201,11 @@ QuickCheck is very good at generating random data, so the challenge with
 generating email addresses is not what to generate, but what not to generate.
 If you're clicking interactively through a test site and every email looks like
 "r36oEx04C4d8l9q6q38V3xMu@Vj4WWrRcZdpCsKy904Dhz65Uy0.com" it's a little
-discomfiting. We're going to look at a way to design strategies for generating
-emails and then let QuickCheck pick which one to use for each generated email.
+discomfiting.
 
-For the domain portion, we'll prepare a small list of popular domains and a made
-up weighted values to decide how frequently each should occur (we'll see how to
-make use of these values soon):
+For the domain portion of the email address, we'll prepare a small list of
+popular domains and a made up weighted values to decide how frequently each
+should occur (we'll see how to make use of these values soon):
 
 > emailDomains :: [(Int, Gen Text)]
 > emailDomains = map (\ (i, t) -> (i, pure t)) [
@@ -220,18 +222,17 @@ We could automate building a list like this from a file containing many more
 domains and actual frequencies if we really
 wanted to match historical data or real world usage in a particular context.
 
-Next we'll focus on the local part of the address. We can start simple: the
-good old first initial, last name style email:
+Next we'd like to create a couple of functions to generate the local
+part of an email address in different ways. We'll start with two plausible
+forms, &lt;first initial&gt;&lt;last name&gt; and &lt;last
+name&gt;&lt;digits&gt;:
 
->> -- initialWithLast "Foo" "Bar" would produce a generator returning "fbar"
+> -- initialWithLast "Foo" "Bar" would produce a generator returning "fbar"
 > initialWithLast :: Text -> Text -> Gen Text
-> initialWithLast fName lName = return $ initial `T.cons` rest
+> initialWithLast fName lName = pure $ initial `T.cons` rest
 >   where initial = T.head . T.toLower $ fName
 >         rest    = T.toLower lName
-
-Now we'll get a little fancier: an email address that's a last name with two
-random digits at the end:
-
+>
 > -- lastWithNumber "Bar" will return barXX (XX for any two digits 11-99)
 > lastWithNumber :: Text -> Gen Text
 > lastWithNumber lName = T.append namePart <$> numberPart
@@ -241,7 +242,7 @@ random digits at the end:
 >
 
 We can put it all together using QuickCheck's *oneof* (`[Gen a] -> Gen a`)
-to randomly choose from the above strategies for the local part, and *frequency*
+to randomly choose from the above functions for the local part, and *frequency*
 (`[(Int, Gen a)] -> Gen a`) to select domains from our weighted list:
 
 > genEmail :: Text -> Text -> Gen Email
@@ -249,10 +250,10 @@ to randomly choose from the above strategies for the local part, and *frequency*
 >                      <*> frequency emailDomains
 
 These examples are only meant to be illustrative, and while the email addresses
-will look somewhat convincing, they'll be pretty similar. You can always extend
-the list of strategies with as many email patterns as you can think of: using
-first names, nick names, foods, random dictionary words, incorporating the
-user's birth year, etc.
+will look somewhat convincing, there won't be much variation. You can always
+extend the list of strategies with as many email patterns as you can think of:
+first name with last initial, nick names, foods, random dictionary words,
+incorporating the user's birth year in any of the other patterns, etc.
 
 
 <h3>The full profile</h3>
@@ -285,7 +286,7 @@ for arbitrary uses (hah, hah). But even though it doesn't export tools for
 working with the internals of Gen directly, it does export a function called
 *sample'* that always generates a list of 11 results in the IO monad. We can
 pair this with *concat* and the *vectorOf* generator to create as many elements
-as we want, as long as you want a multiple of 11. In case you don't, we'll apply
+as we want, as long as you want multiples of 11. In case you don't, we'll apply
 *take* to ensure we only extract the requested number of elements:
 
 > generate :: Int -> Gen a -> IO [a]
@@ -365,9 +366,10 @@ Fermin,Lampey,flampey@sbcglobal.net,"pq@f<v8m*",Male,1929-07-11
 ````
 
 This is by no means a robust program, but we've put enough constraints on the
-generated data that you should be able to read it in a spreadsheet or CSV import
-tool. In a completely non-rigorous benchmark this program was able to generate
-about 40,000 records in a second, and thanks to lazy Haskell magic, it showed a
-low, constant memory usage even when generating 10 million records and piping
-them to a file.
+generated data that you should be able to view it in a spreadsheet or use it
+with many CSV import tools. In a completely non-rigorous benchmark this program
+was able to generate about 40,000 records in a second, and thanks to lazy
+Haskell magic, QuickCheck, and Data.Text, it also showed a low, constant memory
+usage even when generating 10 million records and piping them to a file (a
+process that took less than 4 minutes).
 
