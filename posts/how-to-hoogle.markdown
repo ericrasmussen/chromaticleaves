@@ -126,7 +126,7 @@ cabal haddock --hoogle --all
 
 Now we can use Hoogle's `convert` command to create a `.hoo` file from the text
 database. The text file should be somewhere in the current working directory
-under dist/doc/html):
+under dist/doc/html:
 
 ```console
 hoogle convert dist/doc/html/path/to/your/package/docs.txt
