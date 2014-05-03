@@ -1,5 +1,5 @@
 ---
-title: White paper: Compile Time TDD Coverage
+title: White paper: Compile Time TDD Coverage with Idris
 date: 2014-05-03
 tags: code, idris
 metadescription: A high level introduction to learning dependent types via Idris
@@ -16,7 +16,7 @@ But guess what?
 A crack team of compiler inventors has been in stealth mode for literally
 months preparing a new way to TDD without having to make up units all the time.
 
-The compiler (industry buzzword for a linting tool) is so advanced you can:
+The Idris compiler (industry buzzword for a linting tool) is so advanced you can:
 
 * check all the dynamic types just once at compile time
 * evaluate all possible test cases before the code even runs
