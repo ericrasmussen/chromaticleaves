@@ -79,7 +79,8 @@ Imagine you're building a next gen full stack web app where users can earn and
 redeem special tokens whenever they recommend your app to a friend. You want to
 make a stack-like structure that lets you track the number of recommendations
 and the number of redemptions, but always ensure the number of redemptions is
-less than or equal to the number of recommendations.
+less than or equal to the number of recommendations (in Idris, the type for
+a relation `n <= m` is `LTE n m`).
 
 First you define some data:
 
@@ -161,10 +162,10 @@ recommendApp (MkHist u r o e p v) friend =
 
 ```
 
-Now if you load this up in the Idris interpreter it will tell you what it is
-you're trying to do, even if you were just making things up. We'll also type
-`intros` to have it take all of the arguments as givens and show us what we're
-solving for (the goal):
+Now if you load this up in the Idris interpreter and enter the command `:p wtf`
+it will tell you what it is you're trying to do, even if you were just making
+things up. We'll also type `intros` to have it take all of the arguments as
+givens and show us what we're solving for (the goal):
 
 ```
 -main.wtf> intros
@@ -320,6 +321,9 @@ cabal-install on your system already), and running the commands:
 cabal update
 cabal install idris
 ```
+
+You can read more detailed instructions for different operating systems on
+the [Idris wiki](https://github.com/idris-lang/Idris-dev/wiki).
 
 Now you can work through the tutorial on the
 [docs](http://www.idris-lang.org/documentation/) page to learn more!
