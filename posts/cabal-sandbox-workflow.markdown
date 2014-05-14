@@ -22,7 +22,7 @@ dependencies, and managing all of them at the system level is a nightmare.
 Throw in large libraries and web frameworks at different versions and you have a
 recipe for dependency hell. Trying to resolve and accommodate every new build
 error at the system level is enough to make anyone superstitious, performing
-archaic rituals and bequeathing the mighty build gods before daring to run their
+archaic rituals and beseeching the mighty build gods before daring to run their
 next cabal command.
 
 Even if you manage to make it work, it leaves your system environment in a state
