@@ -18,7 +18,7 @@ launched The Foundation For Teaching People That Classical Music Is Not
 Background Noise.
 
 As I'm the only current member, having founded the organization approximately
-four and a half minutes ago, I can only say that I one day to hope to offer
+four and a half minutes ago, I can only say that I one day hope to offer
 t-shirts of Listz's piano catching fire as he blazes through Mephisto, Paganini
 with devil horns rocking his violin to an astonished audience, and bumper
 stickers that say “Bach Rocks Your Organ”*.
