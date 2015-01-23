@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title></title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.min.css"/>
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+    </style>
+    <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section class="slide level1">
+
+<h3 id="purely-functional-package-management-with-nix">Purely Functional Package Management with Nix</h3>
+<p>Eric Rasmussen / <a href="https://twitter.com/theerasmas/"><span class="citation" data-cites="theerasmas">@theerasmas</span></a></p>
+<p>January 19, 2015</p>
+</section>
+<section class="slide level1">
+
+<h3 id="who-am-i">Who am I</h3>
+<ul>
+<li>OSS contributor</li>
+<li>haskell/python/javascript developer</li>
+<li>works on a hybrid dev/ops team</li>
+<li>prior LUGOD speaker (not about Linux)</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="packaging-the-good-parts">Packaging: The Good Parts</h3>
+<ul>
+<li>installs in one click/command</li>
+<li>automatic dependency resolution
+<figure>
+<img src="ubuntu.png" width=50% height=50% />
+</figure></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p>there's just one problem</p>
+</section>
+<section class="slide level1">
+
+<figure>
+<img src="professor.jpg" />
+</figure>
+</section>
+<section class="slide level1">
+
+<h3 id="packaging-the-bad-parts">Packaging: The Bad Parts</h3>
+<ul>
+<li>dependency hell</li>
+<li>obscure errors</li>
+<li>high maintenance costs</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="tldr-packaging-is-hard">tl;dr packaging is hard</h3>
+<figure>
+<img src="scissor.jpg" />
+</figure>
+</section>
+<section class="slide level1">
+
+<h3 id="package-managers">Package managers</h3>
+</section>
+<section class="slide level1">
+
+<h3 id="choices-os">Choices (OS)</h3>
+<ul>
+<li>dpkg/apt</li>
+<li>rpm/yum</li>
+<li>pacman</li>
+<li>homebrew</li>
+<li>mac ports</li>
+<li>various app stores</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="choices-pl">Choices (PL)</h3>
+<ul>
+<li>easy_install</li>
+<li>pip</li>
+<li>go get</li>
+<li>maven</li>
+<li>npm</li>
+<li>rubygems</li>
+<li>sbt</li>
+<li>cabal</li>
+<li>package.el</li>
+<li>cpan</li>
+<li>pear</li>
+<li>pecl</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="do-we-really-need-another">Do we really need another?</h3>
+<figure>
+<img src="standards.png" />
+</figure>
+<p><small>(via <a href="http://xkcd.com/927/">http://xkcd.com/927/</a>)</small></p>
+</section>
+<section class="slide level1">
+
+<h3 id="introducing-nix">Introducing Nix</h3>
+<ul>
+<li>new model for package management</li>
+<li>introduced in Eelco Dolstra's PhD Thesis (2006)</li>
+<li>based on functional programming principles</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="what-nix-offers">What Nix Offers</h3>
+<ul>
+<li>minimal and portable</li>
+<li>declarative</li>
+<li>reproducible builds</li>
+<li>deterministic</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="functional-purity">Functional purity</h3>
+<ul>
+<li>Function takes inputs and produces output</li>
+<li>Ex: Addition takes two numbers and makes a new one</li>
+<li>40 + 2 = 42</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="functional-purity-1">Functional purity</h3>
+<ul>
+<li>Most programming languages don't enforce this!
+<pre style="font-family:monospace;">
+40 + 2 =
+       = new log file with debug output
+       = database calls
+       = HTTP service calls...
+       = 42, maybe?
+</pre></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="nix-packages-are-pure">Nix packages are pure</h3>
+<ul>
+<li>Input: other packages, configuration options</li>
+<li>Output: a package</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="example-gcc">Example: gcc</h3>
+<p><code>/nix/store/r8vvq9kq18pz08v249h8my6r9vs7s0n3-gcc-4.3.6/</code></p>
+<ul>
+<li>inside the prefix: bin, lib, share, ... directories</li>
+<li>r8vvq9kq18pz08v249h8my6r9vs7s0n3 is a hash of function inputs</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="purity-in-nix">Purity in Nix</h3>
+<ul>
+<li>no global install directories (/usr, /bin)</li>
+<li>/nix/store is immutable (mounted read-only)</li>
+<li>nix expressions cannot write to files</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="impurity-in-nix">Impurity in Nix</h3>
+<ul>
+<li>packages can make network calls (curl/git clone/etc)</li>
+<li>race conditions in parallel builds</li>
+<li>stdenv on OS X depends on globals</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="example-nginx">Example: nginx</h3>
+<pre class="sourceCode perl"><code class="sourceCode perl">{ stdenv, fetchurl, fetchgit, openssl, zlib, pcre, libxml2, libxslt, expat }:
+
+stdenv.mkDerivation rec {
+  name = <span class="kw">&quot;</span><span class="st">nginx-</span><span class="dt">${version}</span><span class="kw">&quot;</span>;
+  version = <span class="kw">&quot;</span><span class="st">1.4.4</span><span class="kw">&quot;</span>;
+
+  src = fetchurl {
+    url = <span class="kw">&quot;</span><span class="st">http://nginx.org/download/nginx-</span><span class="dt">${version}</span><span class="st">.tar.gz</span><span class="kw">&quot;</span>;
+    sha256 = <span class="kw">&quot;</span><span class="st">1f82845mpgmhvm151fhn2cnqjggw9w7cvsqbva9rb320wmc9m63w</span><span class="kw">&quot;</span>;
+  };
+  buildInputs = [ openssl zlib pcre libxml2 libxslt ];
+  configureFlags = [ <span class="kw">&quot;</span><span class="st">--with-http_spdy_module</span><span class="kw">&quot;</span> ];
+  postInstall = <span class="kw">&quot;</span><span class="st">mv </span><span class="dt">$out</span><span class="st">/sbin </span><span class="dt">$out</span><span class="st">/bin</span><span class="kw">&quot;</span>;
+
+  meta = with stdenv.lib; {
+    description = <span class="kw">&quot;</span><span class="st">A reverse proxy and lightweight webserver</span><span class="kw">&quot;</span>;
+    maintainers = [ maintainers.iElectric ];
+    platforms = platforms.all;
+    license = licenses.bsd2;
+  };</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="binary-packages">Binary Packages</h3>
+<ul>
+<li>binary packages are built in hydra build farms</li>
+<li>purity lets us substitute pre-built packages based on the hash</li>
+<li>major speedups when installing on common platforms</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="add-nix-to-your-workflow-in-2-days">Add Nix to your workflow in 2 Days</h3>
+<ul>
+<li>Day 1: install a package</li>
+<li>Day 2: myEnvFun</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="day-1-installation">Day 1: installation</h3>
+<pre class="console"><code>
+$ curl -L http://git.io/nix-install.sh | bash
+$ source ~/.nix-profile/etc/profile.d/nix.sh
+$ nix-env -i nginx
+</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="day-2-config.nix-myenvfun">Day 2: config.nix / myEnvFun</h3>
+<ul>
+<li>Note: fun is for &quot;functional&quot; (having fun is optional)</li>
+</ul>
+<pre class="sourceCode perl"><code class="sourceCode perl"><span class="co"># ~/.nixpkgs/config.nix</span>
+{
+   packageOverrides = pkgs : with pkgs; {
+     pyred2 = pkgs.myEnvFun {
+         name = <span class="kw">&quot;</span><span class="st">pyred2</span><span class="kw">&quot;</span>;
+         buildInputs = [ python27Full redis ];
+     };
+
+     pyred3 = pkgs.myEnvFun {
+         name = <span class="kw">&quot;</span><span class="st">pyred3</span><span class="kw">&quot;</span>;
+         buildInputs = [ python3 redis ];
+     };
+
+   };
+}</code></pre>
+</section>
+<section class="slide level1">
+
+<p>Using myEnvFun</p>
+<pre class="console"><code>
+$ nix-env -i env-pyred2
+$ load-env-pyred2
+env-pyred2 loaded
+
+pyred2:[eric@nixos:~]$ python
+python            python2.7         python2-config
+python2           python2.7-config  python-config</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="easy-to-uninstall-if-needed">Easy to uninstall if needed</h3>
+<pre class="console"><code>
+$ rm -rf /nix
+$ rm -rf ~/nix-profile/
+</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="intermission">intermission</h3>
+</section>
+<section class="slide level1">
+
+<h3 id="nixos">NixOS</h3>
+<ul>
+<li>Declarative config at the system level</li>
+<li>Nix as package manager</li>
+<li>Nix expressions to configure the OS</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="nixos-1">NixOS</h3>
+<ul>
+<li>stateless config management</li>
+<li>NixOS modules for services</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="configuration.nix">configuration.nix</h3>
+<pre class="sourceCode perl"><code class="sourceCode perl">{ config, pkgs, ... }: with pkgs;
+  {
+    networking.firewall.allowedTCPPorts = [ <span class="dv">8000</span> ];
+
+    services.postgresql = {
+      enable = true;
+      <span class="kw">package</span> = pkgs.postgresql93;
+      authentication = pkgs.lib.mkOverride <span class="dv">10</span> <span class="kw">&#39;&#39;</span>
+          <span class="kw">local</span> postgres root ident
+          host myuser myuser <span class="fl">127.0</span>.<span class="fl">0.1</span>/<span class="dv">32</span> password
+          <span class="kw">local</span> all all ident
+      <span class="kw">&#39;&#39;</span>;
+      initialScript = <span class="kw">&quot;</span><span class="st">bootstrap_or_something.sql</span><span class="kw">&quot;</span>;
+    };
+
+    environment.systemPackages = [ emacs24-nox git tmux ghc.ghc783 ];
+
+  }
+}</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="enforcing-good-habits">Enforcing good habits</h3>
+<ul>
+<li>Harder to make one-off hacks</li>
+<li>Config and build changes must be codified</li>
+<li>Example: add hosts to /etc/hosts</li>
+</ul>
+<pre class="sourceCode perl"><code class="sourceCode perl"><span class="co"># configuration.nix</span>
+<span class="co"># will extend /etc/hosts</span>
+networking.extraHosts = <span class="kw">&#39;&#39;</span>
+  some_ip some_host
+  some_ip2 some_host2
+<span class="kw">&#39;&#39;</span>;</code></pre>
+</section>
+<section class="slide level1">
+
+<h3 id="is-nixos-for-me">Is NixOS for me?</h3>
+<ul>
+<li>maybe!</li>
+<li>requires learning nix/writing packages</li>
+<li>great IRC support but few docs/tutorials</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="is-nix-for-me">Is Nix for me?</h3>
+<ul>
+<li>try it out!</li>
+<li>won't interfere with existing packages</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="references">References</h3>
+<ul>
+<li><a href="http://nixos.org">NixOS.org</a></li>
+<li><a href="http://nixos.org/nix/manual/">Nix Package Manager Manual</a></li>
+<li><a href="http://nixos.org/nixos/manual/">NixOS Manual</a></li>
+<li><a href="http://static.domenkozar.com/slides/nixos-fosdem2014/">Domen Kožar's 2014 Fosdem talk</a></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.min.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        theme: 'solarized', // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+    </body>
+</html>
