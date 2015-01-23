@@ -80,6 +80,16 @@ welcome to use these as a basis for your own Hakyll presentations.
 * [Smart Static Sites (html/js)](/slides/smartstaticsites/)
 * [Smart Static Sites (PDF)](/slides/smart_static_sites.pdf)
 
+#### NixOS
+
+Slides from my January 19, 2015 talk on Nix and NixOS for the Linux User's
+Group of Davis. I have these slides available in pandoc markdown somewhere
+so if you want to base a talk on them, please get in touch.
+
+* [Nix/NixOS (html/js)](/slides/nixos-intro/index.html)
+* [Nix/NixOS (PDF)](/slides/nixos_intro.pdf)
+
+
 ### Recommended Learning
 
 -------------------------------
