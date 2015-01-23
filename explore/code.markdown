@@ -45,6 +45,14 @@ Haskell programs in general.
 
 * [GitHub](https://github.com/ericrasmussen/hsmemoryquiz)
 
+#### Learn Snap
+
+A website built using the Snap web framework, containing interactive form
+examples and highlighted code snippets demonstrating how they work.
+
+* [Learn Snap](http://learnsnap.chromaticleaves.com/)
+* [GitHub](https://github.com/ericrasmussen/learn-snap)
+
 
 ### Presentations
 
