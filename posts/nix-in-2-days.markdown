@@ -1,6 +1,6 @@
 ---
 title: Nix in Two Days
-date: 2015-01-25
+date: 2015-01-26
 tags: code, nix, ops
 metadescription: Add the Nix package manager to your workflow in two days
 ---
@@ -20,34 +20,40 @@ If you write code, sooner or later you'll probably need to:
 * declare external dependencies
 * run your code somewhere other than your dev machine
 
-It turns out, this is kind of a hard problem, and new solutions are being
+It turns out this is kind of a hard problem, and new solutions are being
 invented all the time:
 
 | Misleading Google Search Results   |
 |--------------------|---------------|
-| deployment methods | 108,000,000   |
-| package managers   |   9,080,000   |
+| <a href="https://www.google.com/#q=deployment+methods">deployment methods</a> | 108,000,000   |
+| <a href="https://www.google.com/#q=package+managers">package managers</a>     |   9,080,000   |
 
 
 Should I use virtual machines? Containers? Do I need configuration management
-tools? Should I be looking into hosted services? There are no easy answers to
-these questions, and it takes a lot of time and practice to get familiar with
-their tradeoffs and choose an appropriate strategy for your requirements.
+tools? Should I be looking into hosted services in The Cloud? There are no easy
+answers to these questions, and it takes a lot of time and practice to become
+familiar with their tradeoffs and choose an appropriate strategy for your
+project.
 
-But it turns out that whatever you end up using, your deployment strategy will
-almost always be improved by using some form of packaging.
+But regardless of what you choose, there's one thing they almost always
+have in common: packages.
 
-The question then is not whether to use package management, but what package
-managers to use. Today we'll show you how you can incorporate the Nix package
-manager into your workflow in two days with minimal disruption and time, and you
-can even use it alongside other package managers.
+Somewhere along the line your deployment strategy will be improved by being able
+to install something (build or runtime dependencies, your own code, or even
+automation tools themselves) if it's already been packaged up in a way that's
+reproducible and reliable.
 
+We'll show you how you can incorporate the Nix package manager into your
+workflow in two days with minimal disruption and time. You can start taking
+advantage of its benefits almost immediately (such as installing multiple
+packages at once that have conflicting versions or dependencies), but still use
+it alongside any package managers you're already using.
 
 #### Package managers
 
 If you haven't spent time with Nix, you're probably wondering why you need a
-new package manager. We already have apt/yum/homebrew/etc. that all have their
-own approaches, and the whole situation starts to feel a little like this:
+new package manager. We already have apt/yum/homebrew/etc., all with their
+own approaches, and the whole situation starts to feel a little like...
 
 
 ![](/images/xkcd_standards.png "Standards (xkcd.com)")
@@ -64,17 +70,21 @@ concepts have already been
 [covered](https://www.domenkozar.com/2014/03/11/why-puppet-chef-ansible-arent-good-enough-and-we-can-do-better/)
 [elsewhere](http://lethalman.blogspot.com/2014/07/nix-pill-1-why-you-should-give-it-try.html).
 
-I'm going to hope that if you've made it this far, you already have some
+I'm hoping that if you've made it this far, you already have some
 interest in it. If you're skeptical about getting started right away, I
 recommend spending some time reading the above links to get a better sense of
 what Nix offers.
 
+The "two days" recommendation is a suggestion for pacing so you don't need to
+dive too deep down the Nix rabbit hole on the first day you try it out, but the
+actual steps we'll go over could be run through much faster if desired.
+
 
 #### Day 1: Installation
 
-It's not going to take a day to install Nix (the quickstart install takes a
-few minutes at most), but we'll go at a slower pace here so you can spend time
-learning the basic tools and some of the concepts too.
+Good news! It's not going to take a day to install Nix (the quickstart install
+takes a few minutes at most), but we'll go at a slower pace here so you can
+spend time learning the basic tools and some of the concepts too.
 
 One of Nix's defining features is the packages it builds will not depend on
 global install directories (`/bin`, `/usr`, `/lib`, etc), and the packages will
@@ -103,22 +113,24 @@ and modify your user's `$PATH` so it can find utilities installed by Nix.
 To search for packages, you can use `nix-env -q` and grep to filter the
 results. Here's a quick example that will run a query (flag `q`) for packages
 available (flag `a`) on your platform, including the package's attribute path
-(flag `P`). We'll grep for the `cowsay` package, because who wouldn't want to
-install it:
+(flag `P`). We'll grep for the `cowsay` package, because who wouldn't want
+`cowsay`:
 
 ```console
 nix-env -qaP | grep -i cowsay
 nixpkgs.cowsay                    cowsay-3.03
 ```
 
-Now you can either install by name:
+Now you can either install by name (from the right hand column in our search
+results):
 
 ```console
 nix-env -i cowsay-3.03
 ```
 
-Or by attribute path (note that we have to add the flag `A` to indicate we're
-installing by attribute):
+Or by attribute path (as shown in the left hand column of our earlier search
+results). Note that we have to add the flag `A` to indicate we're installing by
+attribute:
 
 ```console
 nix-env -iA nixpkgs.cowsay
@@ -141,17 +153,17 @@ hell.<sup>[3](#footnote3)</sup>
 There are a lot of Nix features that have improved my development workflow, and
 it's very hard to pick just one to cover here. But time and time again, one of
 the most useful for me has been `myEnvFun`, which also shows how we can go
-beyond common definitions of "package" to solve common development problems.
+beyond typical definitions of "package" to solve common development problems.
 
-Note: the "Fun" in `myEnvFun` is for functional. The Nix and NixOS projects make
-no claims or guarantees of enjoyment derived from using it.
+> Note: the "Fun" in `myEnvFun` is for functional. The Nix and NixOS communities
+> make no claims or guarantees of enjoyment derived from using it.
 
 One of the (many) complications in software development is identifying and
 isolating all of the tools you need to work on a particular project. This isn't
-always the case: I usually want tmux and my favorite editor available regardless
-of what project I'm working on. But other times you might have projects that
-require conflicting versions of software, like two or more haskell projects
-using two or more versions of the compiler `ghc`.
+always the case: I usually want `tmux` and my favorite editor available
+regardless of what project I'm working on. But other times you might have
+projects that require conflicting versions of software, like two or more haskell
+projects using two or more versions of the compiler `ghc`.
 
 What we'd like to do is define and codify these different environments as
 package sets containing all the tools we need, preferably giving us some quick
@@ -162,16 +174,15 @@ package overrides you've specified for your user. Here's how you can create the
 file for the first time if you don't already have one:
 
 ```console
-mkdir ~/.nixpkgs
+mkdir -p ~/.nixpkgs
 touch ~/.nixpkgs/config.nix
 ```
 
 Next we'll use the built-in `packageOverrides` to define one or more new
-`myEnvFun` environments. The below example is written in the Nix language, and
-we won't explain all of the syntax here.
-
-Here's an annotated example showing how we can create development environments
-for two different versions of `ghc`:
+`myEnvFun` environments. The below example is written in the Nix language.  We
+won't explain all of the syntax here, but we're defining two new packages that
+can be installed; one that will allow us to use `ghc` at version 7.6, and one at
+8.3.
 
 ```perl
 # ~/.nixpkgs/config.nix
@@ -193,61 +204,80 @@ for two different versions of `ghc`:
 }
 ```
 
-Here's how we can install and use the `ghc76` env from our snippet above:
+Here's how we can install the environments from our snippet above:
 
 ```console
 # nix-env will look for ~/.nixpkgs/config.nix and, if it exists, use the package
 # overrides you've defined there
 nix-env -i env-ghc76
-load-env-ghc76
+nix-env -i env-ghc78
 ```
 
-Now you'll have `ghc` and `ghci` on your path! When you're done you can exit
-back to your normal shell, which won't have either of those tools there
-(assuming you didn't already install them for your user). Want to try out the
-environment with `ghc 7.8.3` instead?
+Once they're installed, there's no need to reinstall them unless you uninstall
+them or make a change (for instance, maybe adding a new package to
+`buildInputs`).
+
+Let's load up our new `ghc76` environment first:
+
+```
+$ load-env-ghc76
+env-ghc76 loaded
+
+ghc76:[vagrant@nixos:~]$ ghci
+GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Prelude>
+Leaving GHCi.
+
+ghc76:[vagrant@nixos:~]$ exit
+```
+
+When you're done you can exit back to your normal shell, which won't have `ghci`
+installed (unless you specifically installed it for your user). Want to try
+out the environment with `ghc 7.8.3` instead?
 
 ```console
-nix-env -i env-ghc78
-load-env-ghc78
+$ load-env-ghc78
+env-ghc78 loaded
+
+ghc78:[vagrant@nixos:~]$ ghci
+GHCi, version 7.8.3: http://www.haskell.org/ghc/  :? for help
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Prelude>
+Leaving GHCi.
+
+ghc78:[vagrant@nixos:~]$ exit
 ```
 
-In practice, taking the time to establish a few basic environments this way
-gives us a reliable way to codify and load shell environments for particular
-projects or sets of tools.
+In practice, taking a few minutes to define these package sets has proven to be
+a fairly straightforward and reliable to keep project dependencies isolated.
+Perhaps best of all, you can keep your `config.nix` in a repo somewhere and use
+it on any machine where you need to reproduce those environments.
 
 Want to start writing your own? Here are some tips:
 
-* myEnvFun creates a new package in the form env-name
-* if you create a myEnvFun with name = "dev" you can install with `nix-env -i env-dev`
-* lists in Nix are space delimited, so if you want the packages git and tmux you'd use buildInputs = [ git tmux ];
-* installing the myEnvFun package creates a new utility on your path in the form load-env-someName
-* for our dev example we can now `load-env-dev` to start a shell containing all the packages from buildInputs
+* myEnvFun prepends "env-" to the "name" you give your environment
+* ex. if you create a myEnvFun with name = "dev", you can install with `nix-env -i env-dev`
+* Nix lists are space delimited. want git and tmux?  `buildInputs = [ git tmux ]`;
+* installing the env adds a script to your path called load-env-name
+* for our dev example we can now call `load-env-dev` to load the environment
 
-And here's a fancy [animated gif](/images/myenvfun.gif) demonstrating it all
-in action.
+Want to see it in action? Here's a fancy [animated gif](/images/myenvfun.gif)
+demonstrating the environment switching.
 
-
-#### How to get your money back
-
-Not literally of course. But if it's just not working out for you, or you're
-worried it might not work out, let's see how you'd uninstall Nix:
-
-```console
-$ rm -rf /nix
-$ rm -rf ~/nix-profile/
-```
-
-Since packages are only able to create files in the `/nix/store`, you don't need
-to worry about them having littered files in your global directories.
 
 
 #### Learning more
 
-There's a lot more to Nix and the Nix/NixOS community. There's Nix the language
-(in order to write your own packages you should learn how to write Nix
-expressions), NixOS the Linux distribution (which lets you write NixOS modules,
-providing a config management-like layer), and a whole lot more.
+The Nix/NixOS community is growing, and they've been developing solutions and
+novel approaches to a great many packaging and deployment problems. There's Nix
+the language (in order to write your own packages you should learn how to write
+Nix expressions), NixOS the Linux distribution (which lets you write NixOS
+modules, providing a config management-like layer), and a whole lot more.
 
 Here are some resources for getting started:
 
