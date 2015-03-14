@@ -1,6 +1,6 @@
 ---
 title: Nix in Two Days
-date: 2015-01-26
+date: 2015-01-29
 tags: code, nix, ops
 metadescription: Add the Nix package manager to your workflow in two days
 ---
