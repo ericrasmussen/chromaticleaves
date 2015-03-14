@@ -55,11 +55,11 @@ Feel free to ponder additional unforeseen problems: bar called with one or more
 None arguments or the wrong number of arguments, methods on baz or quux hitting
 the file system, modifying a database, raising exceptions or abruptly
 terminating your program, etc. Considering all the possibilities and trying to
-account for them is an exercise in madness-inducing futility.
+account for them is an exercise in infuriating futility.
 
 In 2006 Tim Sweeney of Epic Games gave a talk on the future of game
-development<sup>[2](#footnote2)</sup>, in one slide demonstrating all the possible runtime
-failures in a C# snippet:
+development<sup>[2](#footnote2)</sup>, in one slide demonstrating all the
+possible runtime failures in a C# snippet:
 
 ![](/images/epic-fail.png "Tim Sweeney on Game Dev")
 
@@ -67,7 +67,7 @@ This brings us back to the original point: it's often easier to write code than
 read it, because reading it communicates so very little about what it actually
 does or what may go wrong when it runs. Many of us have been bitten before by
 fragile code with subtle dependencies, shared global state, and worse. Even many
-popular open source libraries occasionally engage in bouts of inspired insanity.
+popular open source libraries occasionally engage in bouts of inspired nonsense.
 
 
 #### Mitigating the unknowns
